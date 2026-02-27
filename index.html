@@ -18,12 +18,12 @@
   --transition:.35s cubic-bezier(.4,0,.2,1);
 }
 [data-theme="light"]{
-  --bg:#e8edf2;--bg2:#f2f5f8;--bg3:#dde3ea;
+  --bg:#d4dce6;--bg2:#e8edf2;--bg3:#c8d4dc;
   --border:#b0bec8;--border2:#c8d4dc;
   --text:#0a1628;--text-mid:#2d4a66;--text-dim:#4a6680;
   --accent:#0047cc;--accent2:#b83000;--accent3:#0d6b2e;--accent4:#5b1db8;
   --node-bg:#f2f5f8;
-  --canvas-bg:#dde3ea;
+  --canvas-bg:#c8d4dc;
   --transition:.35s cubic-bezier(.4,0,.2,1);
 }
 
@@ -610,7 +610,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '7.3';
+const DATA_VERSION = '7.3b';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -704,7 +704,7 @@ function loop(){
   if(!cx2d||!W||!H)return;
   cx2d.clearRect(0,0,W,H);
   // Fill canvas bg explicitly for theme correctness
-  cx2d.fillStyle = isDark ? '#070b0f' : '#dde3ea';
+  cx2d.fillStyle = isDark ? '#070b0f' : '#c8d4dc';
   cx2d.fillRect(0,0,W,H);
   frame++;
   drawGrid();
@@ -798,7 +798,7 @@ function drawNode(proj){
 
   // Outer glow
   const g=cx2d.createRadialGradient(sx,sy,r*.3,sx,sy,r*2.2);
-  g.addColorStop(0,drawColor+(isDark?'18':'25'));g.addColorStop(1,'transparent');
+  g.addColorStop(0,drawColor+(isDark?'18':'35'));g.addColorStop(1,'transparent');
   cx2d.beginPath();cx2d.arc(sx,sy,r*(isDark?2.2:1.8),0,Math.PI*2);cx2d.fillStyle=g;cx2d.fill();
 
   // Pulse ring (active projects)
@@ -810,15 +810,15 @@ function drawNode(proj){
 
   // Main circle
   cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
-  cx2d.fillStyle=isDark?'#070b0f':'#e8edf2';cx2d.fill();
+  cx2d.fillStyle=isDark?'#070b0f':'#1a2535';cx2d.fill();
   // Light mode: stronger color tint so nodes stand out from canvas
   if(!isDark){
     cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
-    cx2d.fillStyle=proj.color+'30';cx2d.fill();
+    cx2d.fillStyle=proj.color+'20';cx2d.fill();
   }
   cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
   cx2d.strokeStyle=drawColor;
-  cx2d.lineWidth=(isH?4:3)*zoom;cx2d.stroke();
+  cx2d.lineWidth=(isH?5:3.5)*zoom;cx2d.stroke();
   // Light mode: add thin dark outer ring for definition
   if(!isDark){
     cx2d.beginPath();cx2d.arc(sx,sy,r+1.5*zoom,0,Math.PI*2);
@@ -866,13 +866,13 @@ function drawNode(proj){
       cx2d.beginPath();cx2d.moveTo(sx,sy);cx2d.lineTo(tx,ty);
       cx2d.strokeStyle=isDark?proj.color+'22':proj.color+'55';cx2d.lineWidth=isDark?.5:.8;cx2d.setLineDash([2,4]);cx2d.stroke();cx2d.setLineDash([]);
       cx2d.save();cx2d.translate(tx,ty);cx2d.rotate(Math.PI/4);
-      cx2d.fillStyle=isDark?'#070b0f':'#e8edf2';cx2d.fillRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);
+      cx2d.fillStyle=isDark?'#070b0f':'#1a2535';cx2d.fillRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);
       if(!isDark){cx2d.fillStyle='rgba(0,0,0,0.04)';cx2d.fillRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);}
       cx2d.strokeStyle=isX?(isDark?'#ffd166':'#92400e'):proj.color+(isDark?'55':'');
       cx2d.lineWidth=(isX?2:(isDark?.8:1.5))*zoom;cx2d.strokeRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);
       cx2d.restore();
       cx2d.font=`${Math.max(5,6*zoom)}px DM Mono,monospace`;
-      cx2d.fillStyle=isX?(isDark?'#ffd166':'#92400e'):(isDark?proj.color+'bb':'#0a1628');cx2d.textAlign='center';cx2d.textBaseline='middle';
+      cx2d.fillStyle=isX?(isDark?'#ffd166':'#ffd166'):(isDark?proj.color+'bb':proj.color+'dd');cx2d.textAlign='center';cx2d.textBaseline='middle';
       const words=proj.topics[i].split(' ');
       if(words.length>1){cx2d.fillText(words[0],tx,ty-3*zoom);cx2d.fillText(words.slice(1).join(' '),tx,ty+4*zoom);}
       else cx2d.fillText(proj.topics[i],tx,ty);
@@ -1868,4 +1868,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v7.3b -->
+<!-- v7.3c -->
