@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS-M v7.2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#070b0f;--bg2:#0d1318;--bg3:#111820;
+  --border:#1e3040;--border2:#111820;
+  --text:#eef6ff;--text-mid:#8abbdd;--text-dim:#4d7890;
+  --accent:#00d4ff;--accent2:#ff6b35;--accent3:#a8ff78;--accent4:#c678ff;
+  --node-bg:#070b0f;
+  --canvas-bg:rgba(7,11,15,0.96);
+  --transition:.35s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"]{
+  --bg:#e8edf2;--bg2:#f2f5f8;--bg3:#dde3ea;
+  --border:#b0bec8;--border2:#c8d4dc;
+  --text:#0a1628;--text-mid:#2d4a66;--text-dim:#4a6680;
+  --accent:#0047cc;--accent2:#b83000;--accent3:#0d6b2e;--accent4:#5b1db8;
+  --node-bg:#f2f5f8;
+  --canvas-bg:#dde3ea;
+  --transition:.35s cubic-bezier(.4,0,.2,1);
+}
+
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;overflow:hidden;transition:background var(--transition),color var(--transition);}
+
+/* HEADER */
+#header{
+  position:fixed;top:0;left:0;right:0;height:48px;
+  background:var(--bg3);border-bottom:2px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:8px;z-index:100;
+  box-shadow:0 2px 8px rgba(0,0,0,0.12);
+}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;letter-spacing:.15em;color:var(--accent);margin-right:8px;transition:color var(--transition);}
+.logo-v{font-size:8px;color:var(--text-dim);letter-spacing:.1em;}
+.hbtn{
+  background:var(--bg2);border:1px solid var(--border);color:var(--text-mid);
+  font-family:'DM Mono',monospace;font-size:8px;padding:4px 10px;
+  cursor:pointer;letter-spacing:.1em;transition:all .2s;border-radius:2px;
+}
+.hbtn:hover{background:var(--bg3);color:var(--text);border-color:var(--text-dim);}
+.hbtn.on{border-color:var(--accent);color:var(--accent);background:rgba(9,105,218,0.08);}
+.hbtn.on-orange{border-color:var(--accent2)!important;color:var(--accent2)!important;background:rgba(207,69,0,0.08)!important;}
+.hbtn.on-purple{border-color:var(--accent4)!important;color:var(--accent4)!important;background:rgba(124,58,237,0.08)!important;}
+.spacer{flex:1;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#a8ff78;box-shadow:0 0 8px #a8ff78;animation:pulse 2s infinite;}
+#btn-theme{font-size:12px;padding:3px 8px;letter-spacing:0;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* LAYOUT */
+#layout{
+  position:fixed;top:48px;left:0;right:0;bottom:0;
+  display:flex;
+}
+
+/* LEFT SIDEBAR */
+#sidebar{
+  width:220px;flex-shrink:0;
+  border-right:2px solid var(--border);
+  background:var(--bg2);
+  overflow-y:auto;overflow-x:hidden;
+  box-shadow:2px 0 8px rgba(0,0,0,0.08);
+}
+#sidebar::-webkit-scrollbar{width:2px;}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+
+.sb-sec{padding:10px 12px;border-bottom:1px solid var(--border);}
+.sb-lbl{font-size:7px;letter-spacing:.2em;color:var(--text-mid);text-transform:uppercase;margin-bottom:7px;font-weight:bold;}
+
+.proj-row{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 6px;cursor:pointer;border:1px solid transparent;
+  transition:all .15s;margin-bottom:2px;
+}
+.proj-row:hover{background:var(--bg2);border-color:var(--border);}
+.proj-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.proj-name{font-size:9px;flex:1;color:var(--text);font-weight:500;}
+.proj-ver{font-size:7px;color:var(--text-dim);}
+
+.site-link{
+  display:flex;align-items:center;gap:6px;padding:4px 6px;
+  cursor:pointer;text-decoration:none;margin-bottom:2px;transition:opacity .2s;
+}
+.site-link:hover{opacity:.75;}
+.site-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;animation:pulse 2.5s infinite;}
+.site-name{font-size:8px;color:var(--text-mid);}
+.site-arr{font-size:8px;color:var(--text-dim);}
+
+.ovr-row{display:flex;align-items:center;gap:6px;padding:4px 6px;cursor:pointer;margin-bottom:2px;}
+.ovr-row:hover .ovr-lbl{color:var(--text-mid);}
+.ovr-box{width:8px;height:8px;border:1px solid currentColor;flex-shrink:0;position:relative;}
+.ovr-box.on::after{content:'';position:absolute;inset:1px;background:currentColor;}
+.ovr-lbl{font-size:8px;color:var(--text-dim);transition:color .15s;}
+
+.add-inp{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text);font-weight:500;font-family:'DM Mono',monospace;font-size:9px;
+  padding:5px 7px;margin-bottom:4px;outline:none;
+}
+.add-inp:focus{border-color:var(--accent);}
+.add-inp::placeholder{color:var(--text-dim);}
+.add-sel{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text-mid);font-family:'DM Mono',monospace;font-size:9px;
+  padding:5px 7px;margin-bottom:4px;outline:none;
+}
+/* Search */
+#sb-search{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Mono',monospace;font-size:9px;
+  padding:5px 7px;outline:none;margin-bottom:0;
+  transition:border-color .15s;
+}
+#sb-search:focus{border-color:var(--accent);}
+#sb-search::placeholder{color:var(--text-dim);}
+/* Close button on right panel */
+.rp-close{
+  position:absolute;top:10px;right:10px;
+  width:22px;height:22px;background:transparent;border:1px solid var(--border);
+  color:var(--text-dim);font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;z-index:10;line-height:1;
+}
+.rp-close:hover{border-color:var(--text-mid);color:var(--text);}
+/* Next actions */
+.na-item{display:flex;gap:5px;padding:3px 0;border-bottom:1px solid var(--border2);font-size:6.5px;color:var(--text-mid);line-height:1.4;}
+.na-item:last-child{border-bottom:none;}
+.na-num{color:var(--accent);flex-shrink:0;font-weight:bold;}
+.blocker{font-size:6.5px;color:var(--accent2);padding:2px 0;}
+.ask-box{background:var(--bg3);border:1px solid var(--border);padding:6px 8px;font-size:6.5px;color:var(--text-mid);margin-top:4px;line-height:1.5;}
+/* Decision lens */
+.lens-btn{
+  flex:1;font-size:6px;padding:4px 2px;background:transparent;
+  border:1px solid var(--border);color:var(--text-dim);
+  cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.06em;
+  transition:all .15s;text-align:center;
+}
+.lens-btn:hover{border-color:var(--text-mid);color:var(--text);}
+.lens-btn.active{border-color:var(--accent4);color:var(--accent4);background:rgba(109,40,217,0.08);}
+/* empty state */
+#canvas-empty{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;pointer-events:none;opacity:0;transition:opacity .3s;
+}
+#canvas-empty.show{opacity:1;}
+.empty-icon{font-size:32px;margin-bottom:8px;opacity:.3;}
+.empty-text{font-size:9px;color:var(--text-dim);letter-spacing:.1em;}
+
+.add-btn-main{
+  width:100%;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);
+  color:var(--accent);font-family:'DM Mono',monospace;font-size:9px;
+  padding:6px;cursor:pointer;letter-spacing:.1em;transition:all .2s;
+}
+.add-btn-main:hover{background:rgba(9,105,218,0.12);}
+
+/* CANVAS AREA */
+#canvas-area{
+  flex:1;position:relative;
+  /* Explicit min dimensions so it never collapses */
+  min-width:200px;min-height:200px;
+}
+#main-canvas{
+  position:absolute;top:0;left:0;
+  /* Size set by JS */
+}
+
+/* RIGHT PANEL */
+#rpanel{
+  width:0;overflow:hidden;border-left:1px solid #1c2d3a;
+  background:var(--bg);transition:width .3s ease;flex-shrink:0;
+}
+#rpanel.open{width:260px;}
+#rpanel-inner{width:260px;padding:14px;overflow-y:auto;height:100%;}
+#rpanel-inner::-webkit-scrollbar{width:2px;}
+#rpanel-inner::-webkit-scrollbar-thumb{background:var(--border);}
+.rp-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px;}
+.rp-sub{font-size:7px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:12px;}
+.rp-divider{border:none;border-top:1px solid var(--border);margin:10px 0;}
+
+.ix-card{border:1px solid var(--border);background:var(--bg2);padding:8px;margin-bottom:6px;}
+.ix-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.ix-pair{font-size:8px;color:var(--text);font-weight:600;}
+.ix-score{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.ix-type{font-size:7px;letter-spacing:.1em;margin-bottom:4px;}
+.ix-bar{width:100%;height:2px;background:var(--border);margin-bottom:5px;}
+.ix-bar-fill{height:100%;transition:width .6s;}
+.ix-topics{display:flex;flex-wrap:wrap;gap:2px;}
+.ix-topic{font-size:6px;padding:1px 4px;border:1px solid #ffd16640;color:#ffd166;}
+
+.sig-item{padding:6px 0;border-bottom:1px solid #0f1820;display:flex;gap:6px;align-items:flex-start;}
+.sig-dot{width:4px;height:4px;border-radius:50%;margin-top:4px;flex-shrink:0;animation:pulse 2s infinite;}
+.sig-text{font-size:7px;color:var(--text);font-weight:500;line-height:1.5;}
+.sig-age{font-size:6px;color:var(--text-dim);margin-top:2px;}
+
+.conv-big{font-family:'Syne',sans-serif;font-weight:800;font-size:36px;color:#c678ff;}
+.conv-card{border:1px solid var(--border);background:var(--bg2);padding:10px;margin-bottom:8px;}
+.conv-card-title{font-size:7px;color:var(--accent4);letter-spacing:.12em;margin-bottom:6px;}
+.conv-thread{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border2);font-size:7.5px;color:var(--text-mid);}
+.conv-thread:last-child{border-bottom:none;}
+.conv-td{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+
+.fund-card{border:1px solid var(--border);background:var(--bg2);padding:8px;margin-bottom:6px;}
+.fund-header{display:flex;justify-content:space-between;margin-bottom:4px;}
+.fund-name{font-size:8px;color:var(--text);}
+.fund-amt{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:#ff6b35;}
+.fund-bar{width:100%;height:2px;background:var(--border);margin-bottom:4px;}
+.fund-bar-fill{height:100%;background:#ff6b35;}
+.fund-meta{font-size:6px;color:var(--text-dim);}
+
+/* TOOLTIP */
+#tooltip{
+  position:fixed;pointer-events:none;
+  background:var(--bg);border:1px solid var(--border);
+  padding:10px 12px;min-width:190px;max-width:240px;
+  opacity:0;transition:opacity .12s;z-index:200;
+  box-shadow:0 4px 24px rgba(0,0,0,0.18);
+}
+#tooltip.show{opacity:1;}
+.tt-name{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;margin-bottom:2px;}
+.tt-sub{font-size:7.5px;color:var(--text-mid);margin-bottom:7px;letter-spacing:.05em;}
+.tt-topics{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:7px;}
+.tt-topic{font-size:6px;padding:1px 4px;border:1px solid;}
+.tt-row{display:flex;justify-content:space-between;font-size:7px;margin-bottom:2px;}
+.tt-k{color:var(--text-dim);}
+.tt-v{color:var(--text);}
+.tt-link{
+  display:inline-flex;align-items:center;gap:3px;margin-top:6px;
+  font-size:7px;padding:3px 7px;border:1px solid;cursor:pointer;
+  text-decoration:none;transition:opacity .2s;
+}
+.tt-link:hover{opacity:.7;}
+.tt-hint{font-size:6px;color:var(--text-dim);margin-top:5px;}
+
+/* LEGEND */
+#legend{
+  position:absolute;bottom:12px;left:12px;
+  display:flex;flex-direction:column;gap:3px;
+  pointer-events:none;
+}
+.leg{display:flex;align-items:center;gap:5px;font-size:6px;color:var(--text-dim);letter-spacing:.1em;}
+.leg-line{width:14px;height:1px;}
+
+/* ZOOM */
+#zoom-ctrl{position:absolute;bottom:12px;right:12px;display:flex;flex-direction:column;gap:3px;}
+.z-btn{
+  width:28px;height:28px;background:var(--bg2);border:1px solid var(--border);
+  color:var(--text-mid);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-weight:bold;
+}
+.z-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* CONV BADGE */
+#conv-badge{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(198,120,255,0.08);border:1px solid rgba(198,120,255,0.3);
+  color:#c678ff;font-size:7px;padding:4px 12px;letter-spacing:.12em;
+  pointer-events:none;opacity:0;transition:opacity .4s;white-space:nowrap;
+}
+#conv-badge.show{opacity:1;}
+
+/* TIMELINE */
+#timeline{
+  position:fixed;bottom:0;left:220px;right:0;height:0;
+  background:var(--bg);border-top:2px solid var(--border);
+  transition:height .3s ease;overflow:hidden;z-index:50;
+}
+#timeline.open{height:80px;}
+#tl-canvas{position:absolute;top:0;left:0;}
+#tl-btns{position:absolute;top:5px;right:6px;display:flex;gap:2px;}
+.tl-btn{font-size:6px;padding:3px 6px;background:var(--bg);border:1px solid var(--border);color:var(--text-mid);cursor:pointer;transition:all .2s;}
+.tl-btn.on{color:var(--accent);border-color:var(--accent);}
+
+/* ═══ MOBILE RESPONSIVE ═══ */
+@media (max-width:768px){
+  #sidebar{
+    position:fixed;left:0;top:48px;bottom:0;z-index:80;
+    transform:translateX(-100%);transition:transform .3s ease;
+    width:240px;
+  }
+  #sidebar.mobile-open{transform:translateX(0);}
+  #layout{flex-direction:column;}
+  #canvas-area{width:100vw!important;height:calc(100vh - 48px)!important;}
+  #rpanel.open{
+    position:fixed;right:0;top:48px;bottom:0;z-index:80;
+    width:280px!important;
+  }
+  #lens-bar{display:none!important;}
+  .hbtn{font-size:7px;padding:3px 7px;}
+  .logo-v{display:none;}
+  #timeline{left:0!important;}
+  #btn-mobile-menu{display:flex!important;}
+}
+@media (min-width:769px){
+  #btn-mobile-menu{display:none!important;}
+  #sidebar-overlay{display:none!important;}
+}
+#sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:79;
+}
+#btn-mobile-menu{
+  display:none;align-items:center;justify-content:center;
+  width:32px;height:32px;background:transparent;border:1px solid var(--border);
+  color:var(--text-mid);font-size:16px;cursor:pointer;margin-right:4px;
+}
+
+/* MODAL */
+#modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  display:flex;align-items:center;justify-content:center;
+  z-index:300;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+#modal-bg.show{opacity:1;pointer-events:all;}
+#modal{
+  background:var(--bg);border:1px solid var(--border);
+  padding:20px;width:400px;max-width:94vw;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18);
+}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px;}
+.modal-lbl{font-size:7px;color:var(--text-dim);letter-spacing:.1em;margin-bottom:3px;}
+.modal-row{margin-bottom:8px;}
+.modal-actions{display:flex;gap:6px;margin-top:12px;justify-content:flex-end;}
+.mbtn{background:var(--bg3);border:1px solid var(--border);color:var(--text-mid);font-family:'DM Mono',monospace;font-size:9px;padding:5px 12px;cursor:pointer;transition:all .2s;}
+.mbtn.ok{background:rgba(0,212,255,0.06);border-color:rgba(0,212,255,0.25);color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v7.2 · CAPTAIN MIG</span></span>
+  <button class="hbtn on" id="btn-map">MAP</button>
+  <button class="hbtn" id="btn-timeline">TIMELINE</button>
+  <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
+  <button class="hbtn" id="btn-signals">SIGNALS</button>
+  <button class="hbtn" id="btn-intersect">INTERSECTIONS</button>
+  <button class="hbtn" id="btn-funding">FUNDING</button>
+  <div class="spacer"></div>
+  <button class="hbtn" id="btn-export" title="Export investor snapshot" onclick="exportSnapshot()">↗ EXPORT</button>
+  <button class="hbtn" id="btn-theme" title="Toggle light/dark">◐</button>
+  <div class="live-dot" id="api-dot" title="Signals: loading..." style="background:#ffd166;box-shadow:0 0 8px #ffd166"></div>
+</div>
+<div id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
+<div id="layout">
+  <div id="sidebar">
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Projects</div>
+      <input id="sb-search" placeholder="⌕  search projects &amp; topics" autocomplete="off">
+      <div id="proj-list" style="margin-top:6px"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Live Sites</div>
+      <div id="site-list"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Overlays</div>
+      <div id="ovr-list"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Cultural Layers</div>
+      <div id="cult-list"></div>
+    </div>
+
+    <div class="sb-sec">
+      <div class="sb-lbl">Add Project</div>
+      <input class="add-inp" id="in-name" placeholder="Project name">
+      <input class="add-inp" id="in-desc" placeholder="Description">
+      <input class="add-inp" id="in-topics" placeholder="Topics (comma-separated)">
+      <input class="add-inp" id="in-url" placeholder="Live URL (optional)">
+      <select class="add-sel" id="in-status">
+        <option value="active">Active</option>
+        <option value="seed">Seed Stage</option>
+        <option value="beta">Beta</option>
+        <option value="concept">Concept</option>
+      </select>
+      <button class="add-btn-main" id="btn-add">＋ ADD TO NEXUS</button>
+    </div>
+
+  </div>
+
+  <div id="canvas-area">
+    <canvas id="main-canvas"></canvas>
+    <div id="canvas-empty">
+      <div class="empty-icon">⬡</div>
+      <div class="empty-text">ADD A PROJECT TO BEGIN</div>
+    </div>
+    <div id="legend">
+      <div class="leg"><div class="leg-line" style="background:rgba(0,212,255,.6)"></div>TECH</div>
+      <div class="leg"><div class="leg-line" style="background:repeating-linear-gradient(90deg,rgba(198,120,255,.6) 0,rgba(198,120,255,.6) 3px,transparent 3px,transparent 6px)"></div>STRATEGIC</div>
+      <div class="leg"><div class="leg-line" style="background:rgba(168,255,120,.6)"></div>DATA</div>
+      <div class="leg" id="fund-leg" style="display:none"><div class="leg-line" style="background:rgba(255,107,53,.6)"></div>FUNDING</div>
+      <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:4px">
+        <div class="leg" style="color:var(--text-dim)">1–6 · panels &nbsp; F · search</div>
+        <div class="leg" style="color:var(--text-dim)">ESC · close &nbsp; ⌘/ · add</div>
+      </div>
+    </div>
+    <div id="lens-bar" style="position:absolute;top:10px;right:10px;display:flex;gap:3px;z-index:10;">
+      <button class="lens-btn" data-lens="none" title="Clear lens">MAP</button>
+      <button class="lens-btn" data-lens="milestone" title="Color by time to next milestone">⏱ URGENCY</button>
+      <button class="lens-btn" data-lens="synergy" title="Color by synergy score">⬡ SYNERGY</button>
+      <button class="lens-btn" data-lens="capital" title="Color by capital need">$ CAPITAL</button>
+    </div>
+    <div id="zoom-ctrl">
+      <button class="z-btn" id="z-in">+</button>
+      <button class="z-btn" id="z-out">−</button>
+      <button class="z-btn" id="z-reset">⊙</button>
+    </div>
+    <div id="conv-badge">⬡ CONVERGENCE FIELD ACTIVE</div>
+  </div>
+
+  <div id="rpanel"><div style="position:relative"><button class="rp-close" onclick="closeRP()" title="Close (Esc)">✕</button></div><div id="rpanel-inner"></div></div>
+</div>
+
+<div id="timeline">
+  <canvas id="tl-canvas"></canvas>
+  <div id="tl-btns">
+    <button class="tl-btn on" data-layer="projects">PROJECTS</button>
+    <button class="tl-btn on" data-layer="cultural">CULTURAL</button>
+    <button class="tl-btn on" data-layer="social">SOCIAL</button>
+    <button class="tl-btn" data-layer="funding">FUNDING</button>
+  </div>
+</div>
+
+<div id="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-sub" id="tt-sub"></div>
+  <div class="tt-topics" id="tt-topics"></div>
+  <div id="tt-stats"></div>
+  <div id="tt-link-wrap"></div>
+</div>
+
+<div id="modal-bg">
+  <div id="modal">
+    <div class="modal-title" id="modal-title">Edit Project</div>
+    <div class="modal-row"><div class="modal-lbl">NAME</div><input class="add-inp" id="edit-name"></div>
+    <div class="modal-row"><div class="modal-lbl">DESCRIPTION</div><input class="add-inp" id="edit-desc"></div>
+    <div class="modal-row"><div class="modal-lbl">TOPICS</div><input class="add-inp" id="edit-topics"></div>
+    <div class="modal-row"><div class="modal-lbl">LIVE URL</div><input class="add-inp" id="edit-url"></div>
+    <div class="modal-row"><div class="modal-lbl">STATUS</div>
+      <select class="add-sel" id="edit-status">
+        <option value="active">Active</option><option value="seed">Seed Stage</option>
+        <option value="beta">Beta</option><option value="concept">Concept</option>
+      </select>
+    </div>
+    <div class="modal-row"><div class="modal-lbl">VERSION</div><input class="add-inp" id="edit-ver"></div>
+    <div class="modal-row"><div class="modal-lbl">TARGET LAUNCH</div><input class="add-inp" id="edit-launch"></div>
+    <div class="modal-actions">
+      <button class="mbtn" onclick="closeModal()">Cancel</button>
+      <button class="mbtn ok" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════ */
+const PROJECTS_DEFAULT = [
+  {
+    id:'nerva',name:'NERVA',sub:'Neural Enhanced Risk & Value Assessment',
+    color:'#00d4ff',status:'active',stage:'Seed Round — $3M Target',ver:'v8',launch:'Q2 2026',
+    topics:['quantum decision','temporal mechanics','risk','coherence','entropy','bloch sphere','retrocausality'],
+    markets:['Defense','Autonomous Vehicles','Finance'],
+    url:'https://nerva-v8.vercel.app',
+    x:0.35,y:0.35,r:44,
+    milestones:[{d:'2025-06',l:'v5 live'},{d:'2025-10',l:'v7 live'},{d:'2026-02',l:'v8 dev'},{d:'2026-06',l:'$3M seed'}],
+    signals:['Quantum AI investment up 340% YoY','DOD AI procurement expanding','Decision coherence trending in fintech','Euclid Ventures interest — Nic Poulos']
+  },
+  {
+    id:'charts',name:'ANTHONY CHARTS',sub:'Live World Intelligence Dashboard',
+    color:'#a8ff78',status:'active',stage:'v6 Active Dev',ver:'v6',launch:'v7 Q3 2026',
+    topics:['earth systems','climate data','space weather','human systems','calm window','geopolitics','scientific data'],
+    markets:['Public Intelligence','Climate','Space Systems'],
+    url:'https://anthonycharts.com',
+    x:0.65,y:0.30,r:34,
+    milestones:[{d:'2025-08',l:'v4 launch'},{d:'2025-12',l:'v6 launch'},{d:'2026-05',l:'10yr data'},{d:'2026-09',l:'v7 target'}],
+    signals:['Climate API access expanding','Calm window — no competitor','Space weather going mainstream','Geo tension trackers gaining traction'],
+    next_actions:['Ship 10-year historical data layer','Add API endpoint for 3rd-party use','Publish methodology doc for credibility'],
+    blockers:['API rate limits on satellite data feeds'],
+    ask:'Data partnerships with NOAA / ESA for premium feeds'
+  },
+  {
+    id:'adpulse',name:'ADPULSE',sub:'Intelligent Ad Intelligence Layer',
+    color:'#ff6b35',status:'active',stage:'v1 Live',ver:'v1',launch:'v2 2026',
+    topics:['advertising','brand intelligence','trend detection','media','AI signals','attention economy','real-time bidding'],
+    markets:['AdTech','Media Buying','Brand Intelligence'],
+    url:'https://anthonychartsads.vercel.app',
+    x:0.60,y:0.68,r:30,
+    milestones:[{d:'2026-02',l:'v1 live'},{d:'2026-09',l:'v2 target'}],
+    signals:['Cookie deprecation accelerating','AI ad targeting under scrutiny','Attention economy research spiking','Brand safety gap confirmed'],
+    next_actions:['Define v2 feature set based on v1 feedback','Identify 3 beta brand partners','Build out the brand safety scoring model'],
+    blockers:['Need v1 user interviews','Ad API access requires media buyer credentials'],
+    ask:'Intros to brand safety teams at mid-size agencies'
+  },
+  {
+    id:'reddesk',name:'THE RED DESK',sub:'Book — Creativity & Temporal Contemplation',
+    color:'#c678ff',status:'seed',stage:'Writing — Dec 2026',ver:'draft',launch:'Dec 2026',
+    topics:['creativity','temporal mechanics','decision field','bloch sphere origin','desk metaphor','contemplation','origin story'],
+    markets:['Publishing','Personal Brand','Speaking'],
+    url:'',
+    x:0.28,y:0.68,r:25,
+    milestones:[{d:'2026-01',l:'outline done'},{d:'2026-12',l:'manuscript deadline'}],
+    signals:['Founder philosophy books trending','Temporal mechanics entering mainstream','Origin story anchors NERVA legitimacy','Personal brand multiplies investor credibility'],
+    next_actions:['Write chapter 2: The Basement Lab','Submit first 3 chapters to 2 agents','Publish excerpt on Substack to test resonance'],
+    blockers:['Time allocation — competing with NERVA sprint'],
+    ask:'Literary agent referrals with founder/tech background'
+  },
+  {
+    id:'acadsindex',name:'CHARTS ADS INDEX',sub:'Anthony Charts Ads — Performance Index',
+    color:'#ffd166',status:'active',stage:'v1 Live — Concept Validation',ver:'v1',launch:'v2 Q3 2026',
+    topics:['advertising','media intelligence','brand analytics','goodness index','cultural energy','ad measurement','indexing','editorial','content','truth'],
+    markets:['AdTech','Brand Intelligence','Media Measurement'],
+    url:'https://anthony-charts-ad-index.vercel.app',
+    x:0.82,y:0.22,r:28,
+    milestones:[{d:'2026-02',l:'v1 live'},{d:'2026-06',l:'first brand pilots'},{d:'2026-09',l:'v2 with scoring API'}],
+    signals:['Brand safety crisis deepening — measurement gap','Goodness scoring gaining traction','Post-cookie attention metrics in demand','Cultural energy as ad KPI emerging'],
+    next_actions:['Define Goodness Score methodology v1','Recruit 3 pilot brands for index validation','Connect index data feed to AdPulse dashboard'],
+    blockers:['Need brand advertiser buy-in on non-standard metrics','Index methodology needs academic validation'],
+    ask:'Brand marketers open to alternative performance measurement'
+  }
+];
+
+const LIVE_SITES = [
+  {label:'NERVA v8 ★',url:'https://nerva-v8.vercel.app',color:'#00d4ff'},
+  {label:'NERVA v7',url:'https://nerva-v7.vercel.app',color:'#00d4ff'},
+  {label:'NERVA v5',url:'https://nerva-v5.vercel.app',color:'#00d4ff'},
+  {label:'NERVA Pitch',url:'https://nerva-pitch-live.vercel.app',color:'#00d4ff'},
+  {label:'Anthony Charts',url:'https://anthonycharts.com',color:'#a8ff78'},
+  {label:'AdPulse v1 ★',url:'https://anthonychartsads.vercel.app',color:'#ff6b35'},
+  {label:'Charts Ads Index ★',url:'https://anthony-charts-ad-index.vercel.app',color:'#ffd166'},
+  {label:'NEXUS-M',url:'https://nexus-m.vercel.app',color:'#c678ff'},
+];
+
+const CONNECTIONS = [
+  {from:'nerva',to:'charts',type:'tech',label:'Real-time data architecture',strength:.85},
+  {from:'nerva',to:'adpulse',type:'strategic',label:'Decision intelligence layer',strength:.70},
+  {from:'charts',to:'adpulse',type:'data',label:'World signals → Ad context',strength:.80},
+  {from:'nerva',to:'reddesk',type:'strategic',label:'Temporal mechanics origin',strength:.55},
+  {from:'reddesk',to:'charts',type:'strategic',label:'Narrative data framing',strength:.40},
+  {from:'reddesk',to:'nerva',type:'tech',label:'Bloch sphere origin story',strength:.75},
+  {from:'acadsindex',to:'adpulse',type:'tech',label:'Index feeds AdPulse signals',strength:.90},
+  {from:'acadsindex',to:'charts',type:'data',label:'Cultural energy from Charts data',strength:.85},
+  {from:'acadsindex',to:'nerva',type:'strategic',label:'Goodness scoring → decision integrity',strength:.60},
+  {from:'charts',to:'acadsindex',type:'data',label:'World signals power the index',strength:.80},
+];
+
+const FUND_CONNS = [
+  {from:'nerva',to:'adpulse',label:'Shared AI investor pool',strength:.6},
+  {from:'nerva',to:'charts',label:'Data infra synergy pitch',strength:.5},
+  {from:'adpulse',to:'acadsindex',label:'Joint AdTech raise potential',strength:.7},
+];
+
+const OVERLAYS = [
+  {id:'tech',label:'Tech Connections',color:'#00d4ff',on:true},
+  {id:'strategic',label:'Strategic Pathways',color:'#c678ff',on:true},
+  {id:'data',label:'Data Flow',color:'#a8ff78',on:true},
+  {id:'funding',label:'Funding Pathway',color:'#ff6b35',on:false},
+];
+
+const CULT_LAYERS = [
+  {id:'tech',label:'Tech Milestones',color:'#00d4ff',on:true},
+  {id:'social',label:'Social Signals',color:'#ff6b35',on:true},
+  {id:'geo',label:'Geopolitical',color:'#ffd166',on:true},
+];
+
+const WORLD_EVENTS = [
+  {d:'2025-05',l:'GPT-4o multimodal launch',type:'tech',color:'#00d4ff'},
+  {d:'2025-07',l:'GPT-5 launch — reasoning wave',type:'tech',color:'#00d4ff'},
+  {d:'2025-08',l:'#AIDecision goes viral',type:'social',color:'#ff6b35'},
+  {d:'2025-09',l:'EU AI Act enforcement begins',type:'geo',color:'#ffd166'},
+  {d:'2025-10',l:'DOD AI ethics mandate',type:'geo',color:'#ffd166'},
+  {d:'2025-11',l:'#QuantumAI trends globally',type:'social',color:'#ff6b35'},
+  {d:'2025-12',l:'Nature: Retrocausality paper',type:'tech',color:'#00d4ff'},
+  {d:'2026-01',l:'CES 2026 — AI hardware surge',type:'tech',color:'#00d4ff'},
+  {d:'2026-02',l:'Super Bowl AI ad moment',type:'social',color:'#ff6b35'},
+  {d:'2026-02',l:'NEXUS-M v4 launches',type:'tech',color:'#c678ff'},
+  {d:'2026-03',l:'SpaceX Starship operational',type:'geo',color:'#ffd166'},
+  {d:'2026-04',l:'SEC AI risk mandate finalized',type:'geo',color:'#ffd166'},
+  {d:'2026-05',l:'#ClimateData trending',type:'social',color:'#ff6b35'},
+  {d:'2026-06',l:'NERVA seed round target',type:'tech',color:'#00d4ff'},
+  {d:'2026-07',l:'DOD AI procurement open',type:'geo',color:'#ffd166'},
+  {d:'2026-09',l:'Quantum computing milestone',type:'tech',color:'#00d4ff'},
+  {d:'2026-12',l:'Red Desk manuscript due',type:'tech',color:'#c678ff'},
+  {d:'2027-01',l:'AdPulse v2 target',type:'tech',color:'#ff6b35'},
+];
+
+const SIGNALS = [
+  {text:'Brand goodness scoring — new ad KPI emerging',detail:'Advertisers demanding post-cookie alternatives — Charts Ads Index perfectly timed',color:'#ffd166',cat:'CHARTS ADS',urgency:'HIGH',age:'1h'},
+  {text:'Quantum AI investment up 340% YoY',detail:'DOD + 3 Tier-1 VCs entering space — NERVA timing critical',color:'#00d4ff',cat:'NERVA',urgency:'HIGH',age:'2h'},
+  {text:'Cookie deprecation final rollout confirmed',detail:'Chrome deprecating 3rd-party cookies Q3 2026 — AdPulse window opens',color:'#ff6b35',cat:'ADPULSE',urgency:'HIGH',age:'4h'},
+  {text:'Climate API demand surge +89% search volume',detail:'Extreme weather events driving public data appetite',color:'#a8ff78',cat:'CHARTS',urgency:'MED',age:'6h'},
+  {text:'"Decision coherence" — 8.4K new papers in 2025',detail:'Academic legitimacy building for NERVA core thesis',color:'#00d4ff',cat:'NERVA',urgency:'MED',age:'12h'},
+  {text:'TikTok brand safety crisis escalating',detail:'Advertisers pulling spend — AdPulse intelligence gap confirmed',color:'#ff6b35',cat:'ADPULSE',urgency:'HIGH',age:'1h'},
+  {text:'X-class solar storm forecast next 72hrs',detail:'Space weather APIs spiking — Anthony Charts unique data layer',color:'#a8ff78',cat:'CHARTS',urgency:'HIGH',age:'30m'},
+  {text:'"Retrocausality" enters mainstream science press',detail:'Nature & Quanta Magazine coverage — Red Desk timing strengthens',color:'#c678ff',cat:'RED DESK',urgency:'MED',age:'1d'},
+  {text:'Euclid Ventures: 3 new AI infra deals Q1 2026',detail:'Nic Poulos portfolio expanding — NERVA pitch timing optimal',color:'#ffd166',cat:'FUNDING',urgency:'HIGH',age:'18h'},
+  {text:'DOD autonomous systems AI mandates expanding',detail:'Defense procurement shifting — NERVA decision integrity fit confirmed',color:'#00d4ff',cat:'NERVA',urgency:'MED',age:'2d'},
+  {text:'Founder-philosopher books trending on Substack',detail:'Red Desk narrative resonates with current moment',color:'#c678ff',cat:'RED DESK',urgency:'LOW',age:'3d'},
+  {text:'Calm window: No competitor in global index space',detail:'Anthony Charts occupies unique position — 18mo window estimated',color:'#a8ff78',cat:'CHARTS',urgency:'HIGH',age:'5h'},
+  {text:'FinTech AI mandate: risk coherence models required by SEC',detail:'New SEC guidance aligns with NERVA core function',color:'#00d4ff',cat:'NERVA',urgency:'HIGH',age:'8h'},
+];
+
+/* Projects from localStorage or defaults */
+let PROJECTS = (()=>{
+  try{
+    const saved=localStorage.getItem('nexus-v7');
+    return saved?JSON.parse(saved):JSON.parse(JSON.stringify(PROJECTS_DEFAULT));
+  }catch(e){return JSON.parse(JSON.stringify(PROJECTS_DEFAULT));}
+})();
+const saveP=()=>{try{localStorage.setItem('nexus-v7',JSON.stringify(PROJECTS));}catch(e){}};
+
+/* ═══════════════════════════════════════════════════════════════
+   CANVAS — use absolute pixel dimensions, never flex measurement
+═══════════════════════════════════════════════════════════════ */
+let cv, cx2d, W=0, H=0, frame=0, raf=null;
+let zoom=1, pan={x:0,y:0};
+let hovered=null, selected=null, expanded=null;
+let drag=false, dragStart=null, panStart=null, dragNode=null;
+
+function initCanvas(){
+  cv = document.getElementById('main-canvas');
+  cx2d = cv.getContext('2d');
+  // Restore zoom/pan
+  try{const s=localStorage.getItem('nexus-zp');if(s){const o=JSON.parse(s);zoom=o.zoom||1;pan=o.pan||{x:0,y:0};}}catch(e){}
+  attachEvents();
+  safeStart();
+}
+
+function safeStart(){
+  sizeCanvas();
+  if(W<50||H<50){requestAnimationFrame(safeStart);return;}
+  loop();
+}
+
+function sizeCanvas(){
+  const area = document.getElementById('canvas-area');
+  const isMobile = window.innerWidth <= 768;
+  const sideW = isMobile ? 0 : 220;
+  const headerH = 48;
+  const tlH = document.getElementById('timeline').classList.contains('open') ? 80 : 0;
+  const rpW = (!isMobile && document.getElementById('rpanel').classList.contains('open')) ? 260 : 0;
+  W = window.innerWidth - sideW - rpW;
+  H = window.innerHeight - headerH - tlH;
+  if(W<100) W=100;
+  if(H<100) H=100;
+  cv.width = W;
+  cv.height = H;
+  cv.style.width = W+'px';
+  cv.style.height = H+'px';
+  area.style.width = W+'px';
+  area.style.height = H+'px';
+}
+
+function toS(nx,ny){return{x:nx*W*zoom+pan.x, y:ny*H*zoom+pan.y};}
+
+function drawGrid(){
+  const gridSize=60*zoom;
+  const offX=pan.x%gridSize, offY=pan.y%gridSize;
+  const gc=isDark?'rgba(30,48,64,0.5)':'rgba(0,20,60,0.15)';
+  cx2d.save();
+  cx2d.strokeStyle=gc;cx2d.lineWidth=0.5;
+  for(let x=offX;x<W;x+=gridSize){
+    cx2d.beginPath();cx2d.moveTo(x,0);cx2d.lineTo(x,H);cx2d.stroke();
+  }
+  for(let y=offY;y<H;y+=gridSize){
+    cx2d.beginPath();cx2d.moveTo(0,y);cx2d.lineTo(W,y);cx2d.stroke();
+  }
+  cx2d.globalAlpha=1;
+  cx2d.restore();
+}
+
+function loop(){
+  raf = requestAnimationFrame(loop);
+  if(!cx2d||!W||!H)return;
+  cx2d.clearRect(0,0,W,H);
+  // Fill canvas bg explicitly for theme correctness
+  cx2d.fillStyle = isDark ? '#070b0f' : '#dde3ea';
+  cx2d.fillRect(0,0,W,H);
+  frame++;
+  drawGrid();
+  drawZone();
+  drawConns();
+  PROJECTS.forEach(drawNode);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DRAW FUNCTIONS
+═══════════════════════════════════════════════════════════════ */
+function drawZone(){
+  const active=PROJECTS.filter(p=>p.status==='active');
+  if(active.length<2)return;
+  const cx=active.reduce((s,p)=>s+p.x,0)/active.length;
+  const cy=active.reduce((s,p)=>s+p.y,0)/active.length;
+  const {x:sx,y:sy}=toS(cx,cy);
+  if(!isFinite(sx)||!isFinite(sy))return;
+  const pulse=Math.sin(frame*.016)*.1+.08;
+  const zpurple=isDark?`rgba(198,120,255,${pulse})`:`rgba(107,31,175,${pulse*1.2})`;
+  const g=cx2d.createRadialGradient(sx,sy,5,sx,sy,80*zoom);
+  g.addColorStop(0,zpurple);
+  g.addColorStop(1,'transparent');
+  cx2d.beginPath();cx2d.arc(sx,sy,90*zoom,0,Math.PI*2);
+  cx2d.fillStyle=g;cx2d.fill();
+}
+
+function bez(a,m,b,t){return(1-t)*(1-t)*a+2*(1-t)*t*m+t*t*b;}
+
+function drawConns(){
+  const typeColor=isDark
+    ?{tech:[0,212,255],strategic:[198,120,255],data:[168,255,120]}
+    :{tech:[0,100,180],strategic:[90,20,200],data:[20,130,20]};
+  const typeOvr={tech:'tech',strategic:'strategic',data:'data'};
+
+  CONNECTIONS.forEach(c=>{
+    const ov=OVERLAYS.find(o=>o.id===typeOvr[c.type]);
+    if(!ov||!ov.on)return;
+    const A=PROJECTS.find(p=>p.id===c.from);
+    const B=PROJECTS.find(p=>p.id===c.to);
+    if(!A||!B)return;
+    const a=toS(A.x,A.y), b=toS(B.x,B.y);
+    const col=typeColor[c.type]||[200,200,200];
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2-40*zoom;
+    cx2d.save();
+    cx2d.beginPath();cx2d.moveTo(a.x,a.y);cx2d.quadraticCurveTo(mx,my,b.x,b.y);
+    cx2d.setLineDash(c.type==='strategic'?[5,5]:[]);
+    cx2d.strokeStyle=`rgba(${col[0]},${col[1]},${col[2]},${isDark?c.strength*.5:c.strength*.9})`;
+    cx2d.lineWidth=c.strength*1.8*zoom;cx2d.stroke();cx2d.setLineDash([]);
+    // Animated dot
+    const t=(frame*.0025)%1;
+    cx2d.beginPath();cx2d.arc(bez(a.x,mx,b.x,t),bez(a.y,my,b.y,t),2*zoom,0,Math.PI*2);
+    cx2d.fillStyle=`rgba(${col[0]},${col[1]},${col[2]},1)`;cx2d.fill();
+    cx2d.restore();
+  });
+
+  // Funding
+  const fov=OVERLAYS.find(o=>o.id==='funding');
+  if(fov&&fov.on){
+    FUND_CONNS.forEach(c=>{
+      const A=PROJECTS.find(p=>p.id===c.from), B=PROJECTS.find(p=>p.id===c.to);
+      if(!A||!B)return;
+      const a=toS(A.x,A.y), b=toS(B.x,B.y);
+      const mx=(a.x+b.x)/2, my=(a.y+b.y)/2+30*zoom;
+      cx2d.save();
+      cx2d.beginPath();cx2d.moveTo(a.x,a.y);cx2d.quadraticCurveTo(mx,my,b.x,b.y);
+      cx2d.setLineDash([3,4]);
+      cx2d.strokeStyle=`rgba(255,107,53,${c.strength*.6})`;
+      cx2d.lineWidth=1.2*zoom;cx2d.stroke();cx2d.setLineDash([]);
+      const t=(frame*.002+.5)%1;
+      cx2d.beginPath();cx2d.arc(bez(a.x,mx,b.x,t),bez(a.y,my,b.y,t),2*zoom,0,Math.PI*2);
+      cx2d.fillStyle='rgba(255,107,53,.85)';cx2d.fill();
+      cx2d.restore();
+    });
+  }
+}
+
+function drawNode(proj){
+  const {x:sx,y:sy}=toS(proj.x,proj.y);
+  const r=(proj.r||28)*zoom;
+  if(!isFinite(sx)||!isFinite(sy)||r<=0)return;
+  const isH=hovered===proj.id, isExp=expanded===proj.id;
+  cx2d.save();
+
+  // Decision lens override
+  const lc = lensColor(proj);
+  const drawColor = lc || proj.color;
+  // Search dimming
+  const dimmed = proj._searchHit===false;
+  cx2d.globalAlpha = dimmed ? 0.25 : 1;
+
+  // Outer glow
+  const g=cx2d.createRadialGradient(sx,sy,r*.3,sx,sy,r*2.2);
+  g.addColorStop(0,drawColor+(isDark?'18':'25'));g.addColorStop(1,'transparent');
+  cx2d.beginPath();cx2d.arc(sx,sy,r*(isDark?2.2:1.8),0,Math.PI*2);cx2d.fillStyle=g;cx2d.fill();
+
+  // Pulse ring (active projects)
+  if(proj.status==='active'){
+    const p=Math.sin(frame*.035)*.35+.65;
+    cx2d.beginPath();cx2d.arc(sx,sy,r+7*zoom*p,0,Math.PI*2);
+    cx2d.strokeStyle=isDark?drawColor+'22':drawColor+'88';cx2d.lineWidth=isDark?1:1.5;cx2d.setLineDash([3,4]);cx2d.stroke();cx2d.setLineDash([]);
+  }
+
+  // Main circle
+  cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
+  cx2d.fillStyle=isDark?'#070b0f':'#e8edf2';cx2d.fill();
+  // Light mode: stronger color tint so nodes stand out from canvas
+  if(!isDark){
+    cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
+    cx2d.fillStyle=proj.color+'30';cx2d.fill();
+  }
+  cx2d.beginPath();cx2d.arc(sx,sy,r,0,Math.PI*2);
+  cx2d.strokeStyle=drawColor;
+  cx2d.lineWidth=(isH?4:3)*zoom;cx2d.stroke();
+  // Light mode: add thin dark outer ring for definition
+  if(!isDark){
+    cx2d.beginPath();cx2d.arc(sx,sy,r+1.5*zoom,0,Math.PI*2);
+    cx2d.strokeStyle=lc?'rgba(0,0,0,0.35)':'rgba(0,0,0,0.25)';cx2d.lineWidth=1.5*zoom;cx2d.stroke();
+  }
+
+  // Inner fill
+  cx2d.beginPath();cx2d.arc(sx,sy,r*.5,0,Math.PI*2);
+  cx2d.fillStyle=drawColor+(isDark?'0d':'22');cx2d.fill();
+
+  // Name
+  cx2d.font=`700 ${Math.max(9,isDark?10:11*zoom)}px Syne,sans-serif`;
+  cx2d.fillStyle=proj.color;cx2d.textAlign='center';cx2d.textBaseline='middle';
+  cx2d.fillText(proj.name.split(' ')[0],sx,sy-4*zoom);
+
+  // Version
+  cx2d.font=`${Math.max(6,7.5*zoom)}px DM Mono,monospace`;
+  cx2d.fillStyle=proj.color+'88';
+  cx2d.fillText(proj.ver,sx,sy+7*zoom);
+
+  // Live dot (top-left)
+  if(proj.url){
+    cx2d.beginPath();cx2d.arc(sx-r+5*zoom,sy-r+5*zoom,3*zoom,0,Math.PI*2);
+    cx2d.fillStyle=isDark?'#a8ff78':'#1a7f37';cx2d.fill();
+    if(!isDark){cx2d.strokeStyle='rgba(0,0,0,0.2)';cx2d.lineWidth=0.5;cx2d.stroke();}
+  }
+
+  // Status dot (top-right)
+  const stColorsDark={active:'#a8ff78',seed:'#ff6b35',beta:'#00d4ff',concept:'#c678ff'};
+  const stColorsLight={active:'#1a7f37',seed:'#cf4500',beta:'#0969da',concept:'#7c3aed'};
+  const stColors=isDark?stColorsDark:stColorsLight;
+  cx2d.beginPath();cx2d.arc(sx+r-5*zoom,sy-r+5*zoom,3*zoom,0,Math.PI*2);
+  cx2d.fillStyle=stColors[proj.status]||'#888';cx2d.fill();
+  if(!isDark){cx2d.strokeStyle='rgba(0,0,0,0.2)';cx2d.lineWidth=0.5;cx2d.stroke();}
+
+  // Topic satellites
+  if(isExp&&proj.topics){
+    const count=Math.min(proj.topics.length,8);
+    const orb=(r+48)*zoom;
+    for(let i=0;i<count;i++){
+      const ang=(i/count)*Math.PI*2-Math.PI/2;
+      const tx=sx+Math.cos(ang)*orb, ty=sy+Math.sin(ang)*orb;
+      const tr=15*zoom;
+      const isX=topicCross(proj.id,proj.topics[i]);
+      cx2d.beginPath();cx2d.moveTo(sx,sy);cx2d.lineTo(tx,ty);
+      cx2d.strokeStyle=isDark?proj.color+'22':proj.color+'55';cx2d.lineWidth=isDark?.5:.8;cx2d.setLineDash([2,4]);cx2d.stroke();cx2d.setLineDash([]);
+      cx2d.save();cx2d.translate(tx,ty);cx2d.rotate(Math.PI/4);
+      cx2d.fillStyle=isDark?'#070b0f':'#e8edf2';cx2d.fillRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);
+      if(!isDark){cx2d.fillStyle='rgba(0,0,0,0.04)';cx2d.fillRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);}
+      cx2d.strokeStyle=isX?(isDark?'#ffd166':'#92400e'):proj.color+(isDark?'55':'');
+      cx2d.lineWidth=(isX?2:(isDark?.8:1.5))*zoom;cx2d.strokeRect(-tr*.65,-tr*.65,tr*1.3,tr*1.3);
+      cx2d.restore();
+      cx2d.font=`${Math.max(5,6*zoom)}px DM Mono,monospace`;
+      cx2d.fillStyle=isX?(isDark?'#ffd166':'#92400e'):(isDark?proj.color+'bb':'#0a1628');cx2d.textAlign='center';cx2d.textBaseline='middle';
+      const words=proj.topics[i].split(' ');
+      if(words.length>1){cx2d.fillText(words[0],tx,ty-3*zoom);cx2d.fillText(words.slice(1).join(' '),tx,ty+4*zoom);}
+      else cx2d.fillText(proj.topics[i],tx,ty);
+    }
+  }
+
+  cx2d.restore();
+}
+
+function topicCross(id,topic){
+  return PROJECTS.filter(p=>p.id!==id).some(p=>(p.topics||[]).some(t=>
+    t.toLowerCase().includes(topic.toLowerCase().split(' ')[0])||
+    topic.toLowerCase().includes(t.toLowerCase().split(' ')[0])
+  ));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EVENTS
+═══════════════════════════════════════════════════════════════ */
+function getNode(mx,my){
+  return PROJECTS.find(p=>{
+    const {x:sx,y:sy}=toS(p.x,p.y);
+    return Math.hypot(mx-sx,my-sy)<=(p.r||28)*zoom;
+  })||null;
+}
+
+function attachEvents(){
+  cv.addEventListener('mousedown',e=>{
+    drag=false;dragStart={x:e.clientX,y:e.clientY};panStart={...pan};
+    const r=cv.getBoundingClientRect();
+    const node=getNode(e.clientX-r.left,e.clientY-r.top);
+    dragNode=node||null;
+  });
+  cv.addEventListener('mousemove',e=>{
+    const r=cv.getBoundingClientRect();
+    const mx=e.clientX-r.left, my=e.clientY-r.top;
+    if(dragStart){
+      const dx=e.clientX-dragStart.x, dy=e.clientY-dragStart.y;
+      if(Math.hypot(dx,dy)>3){
+        drag=true;
+        if(dragNode){
+          // Drag node to reposition
+          dragNode.x=(mx-pan.x)/(W*zoom);
+          dragNode.y=(my-pan.y)/(H*zoom);
+          dragNode.x=Math.max(.02,Math.min(.98,dragNode.x));
+          dragNode.y=Math.max(.02,Math.min(.98,dragNode.y));
+        } else {
+          pan.x=panStart.x+dx;pan.y=panStart.y+dy;
+        }
+      }
+    }
+    const node=getNode(mx,my);
+    hovered=node?node.id:null;
+    cv.style.cursor=dragNode&&drag?'grabbing':node?'pointer':(drag?'grabbing':'grab');
+    if(node&&!drag)showTip(node,e.clientX,e.clientY);
+    else document.getElementById('tooltip').classList.remove('show');
+  });
+  cv.addEventListener('mouseup',e=>{
+    if(!drag){
+      const r=cv.getBoundingClientRect();
+      const node=getNode(e.clientX-r.left,e.clientY-r.top);
+      if(node){
+        if(expanded===node.id){expanded=null;selected=null;renderSidebar();}
+        else{selectP(node.id);}
+      }
+      else{expanded=null;selected=null;renderSidebar();}
+    }
+    if(dragNode&&drag){saveP();try{localStorage.setItem('nexus-zp',JSON.stringify({zoom,pan}));}catch(e){}}
+    drag=false;dragStart=null;dragNode=null;
+  });
+  cv.addEventListener('dblclick',e=>{
+    const r=cv.getBoundingClientRect();
+    const node=getNode(e.clientX-r.left,e.clientY-r.top);
+    if(node)openModal(node);
+  });
+  cv.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const factor=e.deltaY>0?.9:1.1;
+    const r=cv.getBoundingClientRect();
+    const mx=e.clientX-r.left, my=e.clientY-r.top;
+    const bx=(mx-pan.x)/zoom, by=(my-pan.y)/zoom;
+    zoom=Math.max(.25,Math.min(5,zoom*factor));
+    pan.x=mx-bx*zoom;pan.y=my-by*zoom;
+    try{localStorage.setItem('nexus-zp',JSON.stringify({zoom,pan}));}catch(e){}
+  },{passive:false});
+  cv.addEventListener('mouseleave',()=>{
+    document.getElementById('tooltip').classList.remove('show');
+    hovered=null;
+  });
+
+  document.getElementById('z-in').onclick=()=>zoom=Math.min(5,zoom*1.2);
+  document.getElementById('z-out').onclick=()=>zoom=Math.max(.25,zoom*.85);
+  document.getElementById('z-reset').onclick=()=>{zoom=1;pan={x:0,y:0};try{localStorage.removeItem('nexus-zp');}catch(e){};};
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOOLTIP
+═══════════════════════════════════════════════════════════════ */
+function showTip(proj,mx,my){
+  const tt=document.getElementById('tooltip');
+  document.getElementById('tt-name').textContent=proj.name;
+  document.getElementById('tt-name').style.color=proj.color;
+  document.getElementById('tt-sub').textContent=proj.sub;
+  document.getElementById('tt-topics').innerHTML=(proj.topics||[]).map(t=>{
+    const x=topicCross(proj.id,t);
+    return`<span class="tt-topic" style="color:${x?'#ffd166':proj.color};border-color:${x?'#ffd16640':proj.color+'35'}">${t}</span>`;
+  }).join('');
+  document.getElementById('tt-stats').innerHTML=`
+    <div class="tt-row"><span class="tt-k">STATUS</span><span class="tt-v" style="color:${proj.color}">${proj.status.toUpperCase()}</span></div>
+    <div class="tt-row"><span class="tt-k">STAGE</span><span class="tt-v">${proj.stage}</span></div>
+    <div class="tt-row"><span class="tt-k">LAUNCH</span><span class="tt-v">${proj.launch||'TBD'}</span></div>
+  `;
+  const lw=document.getElementById('tt-link-wrap');
+  const na=proj.next_actions&&proj.next_actions[0];
+  lw.innerHTML=`
+    ${na?`<div style="font-size:6px;color:var(--accent);margin-bottom:4px;padding:3px 6px;border:1px solid var(--accent)33;line-height:1.4">→ ${na}</div>`:''}
+    ${proj.url?`<a class="tt-link" href="${proj.url}" target="_blank" style="color:${proj.color};border-color:${proj.color}55">↗ LIVE SITE</a>`:''}
+    <div class="tt-hint">CLICK for details · DBLCLICK to edit · DRAG to move</div>
+  `;
+  // Position
+  const pad=16;
+  let tx=mx+pad, ty=my+pad;
+  if(tx+240>window.innerWidth)tx=mx-240-pad;
+  if(ty+220>window.innerHeight)ty=my-220-pad;
+  tt.style.left=tx+'px';tt.style.top=ty+'px';
+  tt.classList.add('show');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════════ */
+function renderSidebar(q=''){
+  const filtered = q ? PROJECTS.filter(p=>
+    p.name.toLowerCase().includes(q) ||
+    (p.topics||[]).some(t=>t.toLowerCase().includes(q)) ||
+    (p.markets||[]).some(m=>m.toLowerCase().includes(q))
+  ) : PROJECTS;
+  document.getElementById('proj-list').innerHTML=(filtered.length?filtered:PROJECTS).map(p=>{
+    const hit = q && (p.name.toLowerCase().includes(q)||(p.topics||[]).some(t=>t.toLowerCase().includes(q)));
+    return `
+    <div class="proj-row" onclick="selectP('${p.id}')">
+      <div class="proj-dot" style="background:${p.color};box-shadow:0 0 5px ${p.color}70"></div>
+      <span class="proj-name">${p.name}</span>
+      <span class="proj-ver" style="color:${p.color}55">${p.ver}</span>
+    </div>`}).join('');
+
+  document.getElementById('site-list').innerHTML=LIVE_SITES.map(s=>`
+    <a class="site-link" href="${s.url}" target="_blank" rel="noopener">
+      <div class="site-dot" style="background:${s.color};box-shadow:0 0 5px ${s.color}80"></div>
+      <span class="site-name">${s.label}</span>
+      <span class="site-arr">↗</span>
+    </a>`).join('');
+
+  document.getElementById('ovr-list').innerHTML=OVERLAYS.map(o=>`
+    <div class="ovr-row" onclick="toggleOvr('${o.id}')">
+      <div class="ovr-box ${o.on?'on':''}" style="color:${o.color}"></div>
+      <span class="ovr-lbl" style="color:${o.on?'#7a9bb0':'#3d5566'}">${o.label}</span>
+    </div>`).join('');
+
+  document.getElementById('cult-list').innerHTML=CULT_LAYERS.map(l=>`
+    <div class="ovr-row" onclick="toggleCult('${l.id}')">
+      <div class="ovr-box ${l.on?'on':''}" style="color:${l.color}"></div>
+      <span class="ovr-lbl" style="color:${l.on?'var(--text-mid)':'var(--text-dim)'}">${l.label}</span>
+    </div>`).join('');
+  updateEmptyState();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════════════════════════ */
+document.getElementById('sb-search').addEventListener('input', function(){
+  const q = this.value.toLowerCase().trim();
+  renderSidebar(q);
+  if(q){
+    // Highlight matching nodes
+    PROJECTS.forEach(p=>{
+      const match = p.name.toLowerCase().includes(q) ||
+        (p.topics||[]).some(t=>t.toLowerCase().includes(q)) ||
+        (p.markets||[]).some(m=>m.toLowerCase().includes(q));
+      p._searchHit = match;
+    });
+  } else {
+    PROJECTS.forEach(p=>delete p._searchHit);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   DECISION LENS
+═══════════════════════════════════════════════════════════════ */
+let activeLens = 'none';
+document.querySelectorAll('.lens-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const lens = btn.dataset.lens;
+    activeLens = (activeLens===lens&&lens!=='none') ? 'none' : lens;
+    document.querySelectorAll('.lens-btn').forEach(b=>b.classList.toggle('active', b.dataset.lens===activeLens));
+  });
+});
+
+function lensColor(proj){
+  if(activeLens==='none') return null;
+  if(activeLens==='milestone'){
+    const future = (proj.milestones||[]).filter(m=>new Date(m.d)>new Date());
+    if(!future.length) return '#3d6070';
+    const days = (new Date(future[0].d)-new Date())/(1000*60*60*24);
+    if(days<60) return '#ff4444';
+    if(days<120) return '#ff6b35';
+    if(days<240) return '#ffd166';
+    return '#a8ff78';
+  }
+  if(activeLens==='synergy'){
+    const ix = computeIX().filter(r=>(r.a.id===proj.id||r.b.id===proj.id)&&r.type==='amplify');
+    const score = ix.reduce((s,r)=>s+r.score,0);
+    if(score>120) return '#a8ff78';
+    if(score>70) return '#00d4ff';
+    if(score>30) return '#c678ff';
+    return '#3d6070';
+  }
+  if(activeLens==='capital'){
+    if(proj.name==='NERVA') return '#ff6b35';
+    if(proj.name==='ADPULSE') return '#ffd166';
+    return '#3d6070';
+  }
+  return null;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════════════════════ */
+function updateEmptyState(){
+  const el = document.getElementById('canvas-empty');
+  if(el) el.classList.toggle('show', PROJECTS.length===0);
+}
+
+function selectP(id){
+  selected=id;expanded=id;renderSidebar();
+  const p=PROJECTS.find(x=>x.id===id);if(!p)return;
+  const rp=document.getElementById('rpanel');
+  rpMode='project';rp.classList.add('open');
+  setTimeout(sizeCanvas,320);
+  const stColorsD={active:'#a8ff78',seed:'#ff6b35',beta:'#00d4ff',concept:'#c678ff'};
+  const stColorsL={active:'#15803d',seed:'#c2410c',beta:'#2563eb',concept:'#6d28d9'};
+  const sc=isDark?stColorsD:stColorsL;
+  document.getElementById('rpanel-inner').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;padding-right:28px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+      <div class="rp-title" style="color:${p.color};margin-bottom:0">${p.name}</div>
+    </div>
+    <div class="rp-sub" style="padding-right:28px">${p.sub}</div>
+    <div style="display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap">
+      <span style="font-size:5.5px;padding:2px 7px;border:1px solid ${sc[p.status]||sc.concept};color:${sc[p.status]||sc.concept};font-weight:bold">${p.status.toUpperCase()}</span>
+      <span style="font-size:5.5px;padding:2px 7px;border:1px solid var(--border);color:var(--text-mid)">${p.ver}</span>
+      ${p.url?`<a href="${p.url}" target="_blank" style="font-size:5.5px;padding:2px 7px;border:1px solid ${p.color}66;color:${p.color};text-decoration:none;font-weight:bold">↗ LIVE</a>`:''}
+    </div>
+
+    ${(p.next_actions||[]).length?`<div class="conv-card" style="border-color:${p.color}44">
+      <div class="conv-card-title" style="color:${p.color}">NEXT 3 MOVES</div>
+      ${p.next_actions.map((a,i)=>`<div class="na-item"><span class="na-num">${i+1}.</span><span>${a}</span></div>`).join('')}
+      ${(p.blockers||[]).length?`<div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border2)">
+        <div style="font-size:5.5px;color:var(--accent2);letter-spacing:.1em;margin-bottom:3px">BLOCKERS</div>
+        ${p.blockers.map(b=>`<div class="blocker">⚑ ${b}</div>`).join('')}
+      </div>`:''}
+      ${p.ask?`<div class="ask-box">
+        <div style="font-size:5.5px;color:var(--accent);letter-spacing:.1em;margin-bottom:3px">LOOKING FOR</div>
+        ${p.ask}
+      </div>`:''}
+    </div>`:''}
+
+    <div class="conv-card">
+      <div class="conv-card-title">STAGE</div>
+      <div style="font-size:9px;color:var(--text);margin-bottom:2px;font-weight:600">${p.stage}</div>
+      <div style="font-size:6.5px;color:var(--text-dim)">Target: ${p.launch||'TBD'}</div>
+    </div>
+
+    ${(p.markets||[]).length?`<div class="conv-card">
+      <div class="conv-card-title">MARKETS</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px">
+        ${p.markets.map(m=>`<span style="font-size:6px;padding:2px 7px;border:1px solid ${p.color}55;color:${isDark?p.color:p.color}">${m}</span>`).join('')}
+      </div>
+    </div>`:''}
+
+    <div class="conv-card">
+      <div class="conv-card-title">TOPICS <span style="color:var(--text-dim);font-weight:normal">· ⬡ = cross-project</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px">
+        ${(p.topics||[]).map(t=>{
+          const x=topicCross(p.id,t);
+          return`<span style="font-size:6px;padding:2px 5px;border:1px solid ${x?(isDark?'#ffd16666':'#b4530955'):p.color+(isDark?'33':'44')};color:${x?(isDark?'#ffd166':'#92400e'):p.color+(isDark?'bb':'')};font-weight:${x?'bold':'normal'}">${t}${x?' ⬡':''}</span>`;
+        }).join('')}
+      </div>
+    </div>
+
+    ${(p.milestones||[]).length?`<div class="conv-card">
+      <div class="conv-card-title">MILESTONES</div>
+      ${p.milestones.map(m=>{
+        const past=new Date(m.d+'T00:00:00')<new Date();
+        return`<div class="conv-thread">
+          <div class="conv-td" style="background:${past?p.color:'var(--border)'}"></div>
+          <span style="color:${past?'var(--text)':'var(--text-dim)'}">${m.l}</span>
+          <span style="margin-left:auto;font-size:5.5px;color:${past?p.color:'var(--text-dim)'}">${m.d}</span>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    ${(p.signals||[]).length?`<div class="conv-card">
+      <div class="conv-card-title">MARKET SIGNALS</div>
+      ${p.signals.map(s=>`<div style="font-size:6.5px;color:var(--text-mid);padding:3px 0;border-bottom:1px solid var(--border2);line-height:1.5">· ${s}</div>`).join('')}
+    </div>`:''}
+
+    <div style="margin-top:8px;display:flex;gap:4px">
+      <button onclick="openModal(PROJECTS.find(x=>x.id==='${p.id}'))" style="flex:1;font-size:7px;padding:6px;background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.25);color:var(--accent);cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.08em">✎ EDIT PROJECT</button>
+    </div>
+  `;
+}
+function toggleOvr(id){
+  const o=OVERLAYS.find(x=>x.id===id);if(o)o.on=!o.on;
+  document.getElementById('fund-leg').style.display=OVERLAYS.find(o=>o.id==='funding').on?'flex':'none';
+  renderSidebar();
+}
+function toggleCult(id){const l=CULT_LAYERS.find(x=>x.id===id);if(l)l.on=!l.on;renderSidebar();drawTL();}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADD PROJECT
+═══════════════════════════════════════════════════════════════ */
+document.getElementById('btn-add').onclick=()=>{
+  const name=document.getElementById('in-name').value.trim();
+  if(!name)return;
+  const colors=['#00d4ff','#a8ff78','#ff6b35','#c678ff','#ffd166','#ff69b4','#00ffcc'];
+  PROJECTS.push({
+    id:name.toLowerCase().replace(/\s+/g,'-')+Date.now(),
+    name:name.toUpperCase(),sub:document.getElementById('in-desc').value.trim()||'New project',
+    color:colors[PROJECTS.length%colors.length],
+    status:document.getElementById('in-status').value,
+    stage:'New Entry',ver:'v0',launch:'TBD',
+    topics:(document.getElementById('in-topics').value||'').split(',').map(t=>t.trim()).filter(Boolean),
+    markets:[],url:document.getElementById('in-url').value.trim(),
+    x:.1+Math.random()*.75,y:.1+Math.random()*.7,r:26,
+    milestones:[],signals:[]
+  });
+  ['in-name','in-desc','in-topics','in-url'].forEach(id=>document.getElementById(id).value='');
+  saveP();renderSidebar();drawTL();updateEmptyState();
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   RIGHT PANEL
+═══════════════════════════════════════════════════════════════ */
+let rpMode=null;
+function openRP(mode){
+  const rp=document.getElementById('rpanel');
+  if(rpMode===mode&&rp.classList.contains('open')){
+    rp.classList.remove('open');rpMode=null;
+    sizeCanvas();return;
+  }
+  rpMode=mode;rp.classList.add('open');
+  setTimeout(sizeCanvas,320);
+  if(mode==='signals')renderSignals();
+  else if(mode==='intersections')renderIntersections();
+  else if(mode==='convergence')renderConvergence();
+  else if(mode==='funding')renderFunding();
+}
+
+function renderSignals(){
+  const urgencyCol={HIGH:'#ff6b35',MED:'#ffd166',LOW:'#3d5566'};
+  const filterCat=window._sigFilter||'ALL';
+  const cats=['ALL',...new Set(SIGNALS.map(s=>s.cat))];
+  const filtered=filterCat==='ALL'?SIGNALS:SIGNALS.filter(s=>s.cat===filterCat);
+  document.getElementById('rpanel-inner').innerHTML=`
+    <div class="rp-title" style="color:#ff6b35">LIVE SIGNALS</div>
+    <div class="rp-sub">DOMAIN INTELLIGENCE FEED · ${new Date().toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit'})}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:10px">
+      ${cats.map(c=>`<button onclick="window._sigFilter='${c}';renderSignals()" style="font-size:6px;padding:2px 6px;background:${filterCat===c?'rgba(255,107,53,.15)':'transparent'};border:1px solid ${filterCat===c?'#ff6b35':'#1c2d3a'};color:${filterCat===c?'#ff6b35':'#3d5566'};cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.08em">${c}</button>`).join('')}
+    </div>
+    ${filtered.map(s=>`
+      <div class="sig-item">
+        <div class="sig-dot" style="background:${s.color}"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+            <div class="sig-text" style="font-weight:bold">${s.text}</div>
+            <span style="font-size:5px;padding:1px 4px;border:1px solid ${urgencyCol[s.urgency]};color:${urgencyCol[s.urgency]};margin-left:4px;white-space:nowrap">${s.urgency}</span>
+          </div>
+          <div style="font-size:6.5px;color:var(--text-mid);line-height:1.4;margin-bottom:2px">${s.detail}</div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="font-size:5px;padding:1px 4px;background:rgba(255,255,255,0.04);color:${s.color};border:1px solid ${s.color}22">${s.cat}</span>
+            <div class="sig-age">${s.age} ago</div>
+          </div>
+        </div>
+      </div>`).join('')}
+    <hr class="rp-divider">
+    <div style="font-size:6.5px;color:var(--text-mid);margin-bottom:8px;font-weight:bold">LIVE DATA CONNECTIONS</div>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
+      ${[
+        {name:'Scopus API',desc:'Academic paper counts',key:API_HOOKS.scopusKey,url:'dev.elsevier.com'},
+        {name:'Cirium Sky',desc:'Aviation + emissions',key:API_HOOKS.ciriumAppKey,url:'developer.cirium.com'},
+        {name:'Signals Feed',desc:'Your hosted JSON',key:API_HOOKS.signalsUrl,url:'github.com/raw'},
+      ].map(h=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border2)">
+        <div style="width:6px;height:6px;border-radius:50%;background:${h.key?'#a8ff78':'#ffd166'}"></div>
+        <div style="flex:1">
+          <div style="font-size:7px;color:var(--text)">${h.name}</div>
+          <div style="font-size:5.5px;color:var(--text-dim)">${h.desc}</div>
+        </div>
+        <span style="font-size:5.5px;color:${h.key?'#a8ff78':'#ffd166'}">${h.key?'LIVE':'CONFIGURE'}</span>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:6px;color:var(--text-dim);text-align:center;letter-spacing:.06em">
+      Add API keys to API_HOOKS object in source to activate live feeds
+    </div>
+  `;
+}
+
+function computeIX(){
+  const res=[];
+  for(let i=0;i<PROJECTS.length;i++){
+    for(let j=i+1;j<PROJECTS.length;j++){
+      const a=PROJECTS[i],b=PROJECTS[j];
+      const tA=a.topics||[],tB=b.topics||[];
+      const shared=tA.filter(t=>tB.some(tb=>tb.includes(t.split(' ')[0])||t.includes(tb.split(' ')[0])));
+      const overlap=shared.length/Math.max(new Set([...tA,...tB]).size,1);
+      const competing=(a.markets||[]).filter(m=>(b.markets||[]).includes(m));
+      let type='neutral',score=Math.round(overlap*60);
+      if(overlap>.25&&!competing.length){type='amplify';score=Math.round(overlap*100);}
+      else if(competing.length&&overlap<.2){type='cancel';score=Math.round((1-overlap)*50);}
+      res.push({a,b,shared,type,score,competing});
+    }
+  }
+  return res.sort((x,y)=>y.score-x.score);
+}
+
+function renderIntersections(){
+  const results=computeIX();
+  document.getElementById('rpanel-inner').innerHTML=`
+    <div class="rp-title" style="color:#c678ff">INTERSECTIONS</div>
+    <div class="rp-sub">TOPIC CONVERGENCE MATRIX</div>
+    ${results.map(r=>{
+      const col=r.type==='amplify'?'#a8ff78':r.type==='cancel'?'#ff6b35':'#7a9bb0';
+      const lbl=r.type==='amplify'?'⬆ AMPLIFY':r.type==='cancel'?'⬇ TENSION':'→ NEUTRAL';
+      return`<div class="ix-card">
+        <div class="ix-header">
+          <div class="ix-pair">${r.a.name.split(' ')[0]} × ${r.b.name.split(' ')[0]}</div>
+          <div class="ix-score" style="color:${col}">${r.score}</div>
+        </div>
+        <div class="ix-type" style="color:${col}">${lbl}</div>
+        <div class="ix-bar"><div class="ix-bar-fill" style="width:${r.score}%;background:${col}"></div></div>
+        ${r.shared.length?`<div class="ix-topics">${r.shared.slice(0,5).map(t=>`<span class="ix-topic">${t}</span>`).join('')}</div>`:''}
+      </div>`;
+    }).join('')}`;
+}
+
+function computeEcosystemScore(){
+  const ix=computeIX();
+  const amplify=ix.filter(r=>r.type==='amplify');
+  const tension=ix.filter(r=>r.type==='cancel');
+  const baseScore=amplify.reduce((s,r)=>s+r.score,0)/Math.max(amplify.length,1);
+  const penalty=tension.reduce((s,r)=>s+r.score*.3,0)/Math.max(tension.length||1,1);
+  const activeBonus=PROJECTS.filter(p=>p.status==='active').length*3;
+  const urlBonus=PROJECTS.filter(p=>p.url).length*2;
+  return Math.min(99,Math.round(baseScore-penalty+activeBonus+urlBonus));
+}
+
+function renderConvergence(){
+  const ix=computeIX();
+  const amplify=ix.filter(r=>r.type==='amplify');
+  const tension=ix.filter(r=>r.type==='cancel');
+  const score=computeEcosystemScore();
+  const topics={};amplify.forEach(r=>r.shared.forEach(t=>{topics[t]=(topics[t]||0)+1;}));
+  const top=Object.entries(topics).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const scoreLabel=score>75?'EXCEPTIONAL':score>60?'HIGH':score>40?'MODERATE':score>25?'BUILDING':'NASCENT';
+  const scoreDesc=score>75
+    ?'Your ecosystem exhibits rare cross-project coherence. Each venture amplifies the others.'
+    :score>60?'Strong strategic alignment. Core threads connect multiple ventures meaningfully.'
+    :score>40?'Moderate convergence detected. Key topic threads emerging across projects.'
+    :'Early-stage ecosystem. More connections will emerge as projects develop.';
+  document.getElementById('rpanel-inner').innerHTML=`
+    <div class="rp-title" style="color:#c678ff">CONVERGENCE</div>
+    <div class="rp-sub">ECOSYSTEM COHERENCE FIELD</div>
+    <div class="conv-card">
+      <div class="conv-card-title">COHERENCE SCORE</div>
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <div class="conv-big">${score}</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:#c678ff;padding-bottom:8px">${scoreLabel}</div>
+      </div>
+      <div class="ix-bar" style="margin:6px 0 8px"><div class="ix-bar-fill" style="width:${score}%;background:linear-gradient(90deg,#c678ff,#00d4ff)"></div></div>
+      <div style="font-size:6.5px;color:var(--text-mid);line-height:1.6">${scoreDesc}</div>
+      <div style="display:flex;gap:10px;margin-top:8px;font-size:6px;color:var(--text-dim)">
+        <span>⬆ ${amplify.length} amplifying</span>
+        <span>⬇ ${tension.length} tensions</span>
+        <span>→ ${ix.length-amplify.length-tension.length} neutral</span>
+      </div>
+    </div>
+    <div class="conv-card">
+      <div class="conv-card-title">DOMINANT THREADS</div>
+      <div style="font-size:6px;color:var(--text-dim);margin-bottom:6px">Topics appearing across 2+ ventures</div>
+      ${top.map(([t,c])=>`
+        <div class="conv-thread">
+          <div class="conv-td" style="background:#ffd166"></div>
+          <span style="text-transform:capitalize">${t}</span>
+          <span style="margin-left:auto;color:#ffd166;font-weight:bold">${c}× overlap</span>
+        </div>`).join('')}
+    </div>
+    <div class="conv-card">
+      <div class="conv-card-title">AMPLIFYING PAIRS</div>
+      ${amplify.map(r=>`
+        <div class="conv-thread">
+          <div class="conv-td" style="background:#a8ff78"></div>
+          <div style="flex:1">
+            <div>${r.a.name.split(' ')[0]} × ${r.b.name.split(' ')[0]}</div>
+            <div style="font-size:5.5px;color:var(--text-dim);margin-top:1px">${r.shared.slice(0,2).join(', ')}</div>
+          </div>
+          <span style="color:#a8ff78;font-weight:bold">${r.score}</span>
+        </div>`).join('')}
+    </div>
+    ${tension.length?`<div class="conv-card">
+      <div class="conv-card-title" style="color:#ff6b35">TENSIONS</div>
+      ${tension.map(r=>`
+        <div class="conv-thread">
+          <div class="conv-td" style="background:#ff6b35"></div>
+          <span>${r.a.name.split(' ')[0]} ↔ ${r.b.name.split(' ')[0]}</span>
+          <span style="margin-left:auto;color:#ff6b35;font-size:6px">${r.competing.join(', ')}</span>
+        </div>`).join('')}
+    </div>`:''}
+    <div class="conv-card" style="border-color:rgba(0,212,255,.2)">
+      <div class="conv-card-title" style="color:#00d4ff">FOUNDER BRIEF</div>
+      <div style="font-size:6.5px;color:var(--text-mid);line-height:1.7">
+        Your portfolio is built around a coherent intellectual core: <strong style="color:#ffd166">temporal mechanics</strong>, 
+        <strong style="color:#ffd166">decision intelligence</strong>, and <strong style="color:#ffd166">living data systems</strong>. 
+        NERVA provides the scientific legitimacy. Anthony Charts provides the data substrate. 
+        AdPulse captures the commercial wedge. The Red Desk provides the narrative origin. 
+        Together they form an ecosystem that is more than the sum of its parts.
+      </div>
+    </div>`;
+  // Add export button at bottom
+  document.getElementById('rpanel-inner').insertAdjacentHTML('beforeend',`
+    <div style="margin-top:12px">
+      <button onclick="exportSnapshot()" style="width:100%;font-size:7px;padding:8px;background:rgba(198,120,255,0.08);border:1px solid rgba(198,120,255,0.3);color:#c678ff;cursor:pointer;font-family:'DM Mono',monospace;letter-spacing:.1em">
+        ↗ EXPORT INVESTOR SNAPSHOT
+      </button>
+    </div>
+  `);
+  showBadge();
+}
+
+function renderFunding(){
+  const fundData=[
+    {id:'nerva',name:'NERVA',color:'#00d4ff',target:'$3.0M',type:'Seed Round',timeline:'Q2 2026',
+     readiness:72,contacts:['Nic Poulos — Euclid Ventures','Rishad Tobaccowala — Strategic Advisor'],
+     status:'Active outreach',markets:'Defense · AV · FinTech',
+     thesis:'Decision integrity layer for autonomous AI — $340B TAM',
+     milestones:['v8 deployed ✓','Pitch deck live ✓','First LP meetings →','Term sheet target Q2']},
+    {id:'adpulse',name:'ADPULSE',color:'#ff6b35',target:'$1.5M',type:'Pre-Seed',timeline:'Late 2026',
+     readiness:28,contacts:['AdTech angels (to be identified)'],
+     status:'Validation phase',markets:'AdTech · Media · Brand Intelligence',
+     thesis:'First AI brand intelligence layer post-cookie — capturing $890B attention economy gap',
+     milestones:['v1 live ✓','Market validation ongoing →','Investor deck: Q3 2026','Raise: Q4 2026']},
+  ];
+  const total='$4.5M';
+  document.getElementById('rpanel-inner').innerHTML=`
+    <div class="rp-title" style="color:#ff6b35">FUNDING PATHWAY</div>
+    <div class="rp-sub">CAPITAL TARGETS & RAISE READINESS</div>
+    ${fundData.map(f=>`
+      <div class="fund-card">
+        <div class="fund-header">
+          <div class="fund-name" style="color:${f.color}">${f.name}</div>
+          <div class="fund-amt">${f.target}</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:6px;color:var(--text-dim)">${f.type} · ${f.timeline}</span>
+          <span style="font-size:6px;padding:1px 5px;border:1px solid ${f.color}55;color:${f.color}">${f.status.toUpperCase()}</span>
+        </div>
+        <div style="font-size:6px;color:var(--text-dim);margin-bottom:4px">RAISE READINESS</div>
+        <div class="fund-bar" style="margin-bottom:3px"><div class="fund-bar-fill" style="width:${f.readiness}%;background:${f.color}"></div></div>
+        <div style="text-align:right;font-size:6px;color:${f.color};margin-bottom:6px">${f.readiness}%</div>
+        <div style="font-size:6.5px;color:var(--text-mid);line-height:1.5;margin-bottom:6px">${f.thesis}</div>
+        <div style="font-size:5.5px;color:var(--text-dim);margin-bottom:3px;letter-spacing:.08em">MARKETS</div>
+        <div style="font-size:6px;color:var(--text-mid);margin-bottom:6px">${f.markets}</div>
+        <div style="font-size:5.5px;color:var(--text-dim);margin-bottom:3px;letter-spacing:.08em">CONTACTS</div>
+        ${f.contacts.map(c=>`<div style="font-size:6px;color:var(--text-mid);padding:1px 0">· ${c}</div>`).join('')}
+        <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border2)">
+          ${f.milestones.map(m=>{
+            const done=m.includes('✓');
+            const active=m.includes('→');
+            return`<div style="font-size:6px;color:${done?'#a8ff78':active?f.color:'var(--text-dim)'};padding:1px 0">${done?'✓':active?'→':'○'} ${m.replace(' ✓','').replace(' →','')}</div>`;
+          }).join('')}
+        </div>
+      </div>`).join('')}
+    <div class="conv-card" style="border-color:rgba(255,107,53,.3)">
+      <div class="conv-card-title">PORTFOLIO TOTAL</div>
+      <div class="conv-big" style="color:#ff6b35">${total}</div>
+      <div style="font-size:6.5px;color:var(--text-mid);margin-top:4px;line-height:1.6">
+        Two-vehicle capital strategy. NERVA leads as primary raise with highest readiness. 
+        AdPulse follows once NERVA closes. Shared investor narrative: <em style="color:#ffd166">The Temporal Intelligence Stack.</em>
+      </div>
+    </div>`;
+  const fo=OVERLAYS.find(o=>o.id==='funding');
+  if(fo&&!fo.on){fo.on=true;document.getElementById('fund-leg').style.display='flex';renderSidebar();}
+}
+
+function showBadge(){
+  const b=document.getElementById('conv-badge');
+  b.classList.add('show');setTimeout(()=>b.classList.remove('show'),3500);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMELINE
+═══════════════════════════════════════════════════════════════ */
+let tlCv, tlCtx, TLW=0, TLH=0;
+const TL_START=new Date('2025-01-01'), TL_END=new Date('2027-06-01');
+const TL_RANGE=TL_END-TL_START;
+
+function initTL(){
+  tlCv=document.getElementById('tl-canvas');
+  tlCtx=tlCv.getContext('2d');
+  sizeTL();
+}
+function sizeTL(){
+  const tl=document.getElementById('timeline');
+  TLW=tl.offsetWidth||window.innerWidth-220;
+  TLH=tl.offsetHeight||80;
+  if(TLW<10||TLH<10)return;
+  tlCv.width=TLW;tlCv.height=TLH;
+  drawTL();
+}
+function dToX(ds){return((new Date(ds)-TL_START)/TL_RANGE)*(TLW-100)+50;}
+
+function drawTL(){
+  if(!tlCtx||!TLW||!TLH)return;
+  tlCtx.clearRect(0,0,TLW,TLH);
+  const lc=isDark?'#1e3040':'#8ca0b4', tc=isDark?'#3d6070':'#0a1628';
+  const activeLayers=Array.from(document.querySelectorAll('.tl-btn.on')).map(b=>b.dataset.layer);
+
+  // Base line
+  tlCtx.beginPath();tlCtx.moveTo(50,TLH/2);tlCtx.lineTo(TLW-50,TLH/2);
+  tlCtx.strokeStyle=lc;tlCtx.lineWidth=1;tlCtx.stroke();
+
+  // Month ticks
+  let d=new Date(TL_START);
+  while(d<TL_END){
+    const x=dToX(d.toISOString().slice(0,7));
+    tlCtx.beginPath();tlCtx.moveTo(x,TLH/2-2);tlCtx.lineTo(x,TLH/2+2);
+    tlCtx.strokeStyle=lc;tlCtx.lineWidth=1;tlCtx.stroke();
+    if(d.getMonth()%3===0){
+      tlCtx.font='6px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
+      tlCtx.fillText(`${d.toLocaleString('default',{month:'short'})} '${String(d.getFullYear()).slice(2)}`,x,TLH-4);
+    }
+    d.setMonth(d.getMonth()+1);
+  }
+
+  // NOW
+  const nowX=dToX(new Date().toISOString().slice(0,7));
+  tlCtx.beginPath();tlCtx.moveTo(nowX,2);tlCtx.lineTo(nowX,TLH-14);
+  tlCtx.strokeStyle='#ff6b35';tlCtx.lineWidth=1.5;tlCtx.stroke();
+  tlCtx.font='6px DM Mono,monospace';tlCtx.fillStyle='#ff6b35';tlCtx.textAlign='center';
+  tlCtx.fillText('NOW',nowX,9);
+
+  // Project milestones
+  if(activeLayers.includes('projects')){
+    PROJECTS.forEach((proj,pi)=>{
+      (proj.milestones||[]).forEach((ms,i)=>{
+        const x=dToX(ms.d);if(x<50||x>TLW-50)return;
+        const yOff=pi%2===0?-14:14;
+        tlCtx.beginPath();tlCtx.arc(x,TLH/2,3,0,Math.PI*2);
+        tlCtx.fillStyle=proj.color;tlCtx.fill();
+        tlCtx.beginPath();tlCtx.moveTo(x,TLH/2+(yOff>0?3:-3));tlCtx.lineTo(x,TLH/2+yOff);
+        tlCtx.strokeStyle=proj.color+'55';tlCtx.lineWidth=1;tlCtx.stroke();
+        tlCtx.font='5.5px DM Mono,monospace';tlCtx.fillStyle=proj.color+'cc';tlCtx.textAlign='center';
+        tlCtx.fillText(ms.l,x,TLH/2+yOff+(yOff>0?7:-2));
+      });
+    });
+  }
+
+  // Cultural events
+  WORLD_EVENTS.forEach(evt=>{
+    const cl=CULT_LAYERS.find(l=>l.id===evt.type);
+    if(!cl||!cl.on)return;
+    if(evt.type==='social'&&!activeLayers.includes('social'))return;
+    if((evt.type==='tech'||evt.type==='geo')&&!activeLayers.includes('cultural'))return;
+    const x=dToX(evt.d);if(x<50||x>TLW-50)return;
+    tlCtx.save();tlCtx.translate(x,10);tlCtx.rotate(Math.PI/4);
+    tlCtx.fillStyle=evt.color;tlCtx.fillRect(-3,-3,6,6);
+    tlCtx.restore();
+    tlCtx.font='5.5px DM Mono,monospace';tlCtx.fillStyle=evt.color+'aa';tlCtx.textAlign='center';
+    tlCtx.fillText(evt.l.slice(0,22),x,20);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════════════════ */
+let editId=null;
+function openModal(proj){
+  editId=proj.id;
+  document.getElementById('modal-title').textContent='Edit — '+proj.name;
+  document.getElementById('edit-name').value=proj.name;
+  document.getElementById('edit-desc').value=proj.sub;
+  document.getElementById('edit-topics').value=(proj.topics||[]).join(', ');
+  document.getElementById('edit-url').value=proj.url||'';
+  document.getElementById('edit-status').value=proj.status;
+  document.getElementById('edit-ver').value=proj.ver;
+  document.getElementById('edit-launch').value=proj.launch||'';
+  document.getElementById('modal-bg').classList.add('show');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('show');editId=null;}
+function saveEdit(){
+  const p=PROJECTS.find(x=>x.id===editId);if(!p)return;
+  p.name=document.getElementById('edit-name').value.trim().toUpperCase();
+  p.sub=document.getElementById('edit-desc').value.trim();
+  p.topics=document.getElementById('edit-topics').value.split(',').map(t=>t.trim()).filter(Boolean);
+  p.url=document.getElementById('edit-url').value.trim();
+  p.status=document.getElementById('edit-status').value;
+  p.ver=document.getElementById('edit-ver').value.trim();
+  p.launch=document.getElementById('edit-launch').value.trim();
+  saveP();renderSidebar();closeModal();
+}
+document.getElementById('modal-bg').addEventListener('click',e=>{if(e.target.id==='modal-bg')closeModal();});
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER BUTTONS
+═══════════════════════════════════════════════════════════════ */
+document.getElementById('btn-timeline').onclick=function(){
+  const tl=document.getElementById('timeline');
+  const open=tl.classList.toggle('open');
+  this.classList.toggle('on',open);
+  setTimeout(()=>{sizeTL();sizeCanvas();},350);
+};
+document.getElementById('btn-convergence').onclick=function(){
+  clearHBtns();this.classList.add('on-purple');openRP('convergence');
+};
+document.getElementById('btn-signals').onclick=function(){
+  clearHBtns();this.classList.add('on-orange');openRP('signals');
+};
+document.getElementById('btn-intersect').onclick=function(){
+  clearHBtns();this.classList.add('on-purple');openRP('intersections');
+};
+document.getElementById('btn-funding').onclick=function(){
+  clearHBtns();this.classList.add('on-orange');openRP('funding');
+};
+document.getElementById('btn-map').onclick=function(){clearHBtns();this.classList.add('on');};
+function clearHBtns(){document.querySelectorAll('.hbtn').forEach(b=>b.className='hbtn');}
+
+// Timeline layer toggles
+document.querySelectorAll('.tl-btn').forEach(btn=>{
+  btn.onclick=()=>{btn.classList.toggle('on');drawTL();};
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   WINDOW RESIZE
+═══════════════════════════════════════════════════════════════ */
+// resize handled with debounce below
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT — runs after DOM is painted
+═══════════════════════════════════════════════════════════════ */
+/* THEME */
+let isDark = localStorage.getItem('nexus-theme') !== 'light';
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('btn-theme').textContent = isDark ? '◐' : '◑';
+  localStorage.setItem('nexus-theme', isDark ? 'dark' : 'light');
+}
+document.getElementById('btn-theme').onclick = () => { isDark = !isDark; applyTheme(); };
+
+// Debounced resize
+let _rsz;
+window.addEventListener('resize',()=>{
+  clearTimeout(_rsz);
+  _rsz=setTimeout(()=>{sizeCanvas();sizeTL();},120);
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='Escape'){closeRP();closeModal();expanded=null;renderSidebar();}
+  if(e.key==='1'){document.getElementById('btn-map').click();}
+  if(e.key==='2'){document.getElementById('btn-timeline').click();}
+  if(e.key==='3'){document.getElementById('btn-convergence').click();}
+  if(e.key==='4'){document.getElementById('btn-signals').click();}
+  if(e.key==='5'){document.getElementById('btn-intersect').click();}
+  if(e.key==='6'){document.getElementById('btn-funding').click();}
+  if((e.metaKey||e.ctrlKey)&&e.key==='/'){{e.preventDefault();document.getElementById('in-name').focus();}}
+  if(e.key==='f'&&!e.metaKey){document.getElementById('sb-search').focus();}
+});
+
+function closeRP(){
+  const rp=document.getElementById('rpanel');
+  rp.classList.remove('open');rpMode=null;
+  sizeCanvas();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE MENU
+═══════════════════════════════════════════════════════════════ */
+function toggleMobileMenu(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sidebar-overlay');
+  const open=sb.classList.toggle('mobile-open');
+  ov.style.display=open?'block':'none';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LIVE DATA HOOKS
+═══════════════════════════════════════════════════════════════ */
+const API_HOOKS = {
+  // Scopus API — academic paper counts for key topics
+  // Replace with your key from dev.elsevier.com
+  scopusKey: '',
+  // Cirium FlightStats — you already have this
+  ciriumAppId: '',
+  ciriumAppKey: '',
+  // Signal JSON — host your own signals.json on GitHub raw
+  signalsUrl: '',
+};
+
+async function fetchLiveSignals(){
+  const dot=document.getElementById('api-dot');
+  let liveCount=0;
+
+  // ── Scopus: count papers on key topics ──────────────────────
+  if(API_HOOKS.scopusKey){
+    try{
+      const topics=['decision coherence','retrocausality','quantum decision','autonomous vehicle risk'];
+      const counts=await Promise.all(topics.map(t=>
+        fetch(`https://api.elsevier.com/content/search/scopus?query=${encodeURIComponent(t)}&count=0`,
+          {headers:{'X-ELS-APIKey':API_HOOKS.scopusKey,'Accept':'application/json'}})
+        .then(r=>r.json())
+        .then(d=>({topic:t,count:parseInt(d['search-results']?.['opensearch:totalResults']||0)}))
+        .catch(()=>({topic:t,count:null}))
+      ));
+      counts.forEach(({topic,count})=>{
+        if(count!==null){
+          const existing=SIGNALS.find(s=>s.text.includes(topic.split(' ')[0]));
+          if(existing){existing.text=`"${topic}" — ${count.toLocaleString()} academic papers 2025`;existing.age='live';}
+          liveCount++;
+        }
+      });
+    }catch(e){console.log('Scopus unavailable:',e);}
+  }
+
+  // ── Signals JSON — your hosted feed ─────────────────────────
+  if(API_HOOKS.signalsUrl){
+    try{
+      const data=await fetch(API_HOOKS.signalsUrl).then(r=>r.json());
+      if(Array.isArray(data)&&data.length){
+        data.forEach(s=>{if(s.text&&s.color)SIGNALS.unshift({...s,age:'live'});});
+        liveCount++;
+      }
+    }catch(e){console.log('Signals feed unavailable:',e);}
+  }
+
+  // Update API status dot
+  if(liveCount>0){
+    dot.style.background='#a8ff78';dot.style.boxShadow='0 0 8px #a8ff78';
+    dot.title=`${liveCount} live data source${liveCount>1?'s':''} connected`;
+  } else {
+    dot.style.background='#ffd166';dot.style.boxShadow='0 0 8px #ffd166';
+    dot.title='No live APIs configured — static data mode';
+  }
+
+  if(rpMode==='signals')renderSignals();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT SNAPSHOT
+═══════════════════════════════════════════════════════════════ */
+function exportSnapshot(){
+  const ix=computeIX();
+  const amplify=ix.filter(r=>r.type==='amplify');
+  const ecoScore=computeEcosystemScore();
+  const scoreLabel=ecoScore>75?'EXCEPTIONAL':ecoScore>60?'HIGH':ecoScore>40?'MODERATE':'BUILDING';
+  const topics={};amplify.forEach(r=>r.shared.forEach(t=>{topics[t]=(topics[t]||0)+1;}));
+  const topThreads=Object.entries(topics).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([t])=>t);
+  const now=new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  const html=`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NEXUS-M — Founder Snapshot · ${now}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Mono',monospace,monospace;background:#070b0f;color:#ddeeff;padding:40px;max-width:900px;margin:0 auto;}
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400&display=swap');
+  h1{font-family:Syne,sans-serif;font-size:28px;font-weight:800;color:#00d4ff;letter-spacing:.1em;margin-bottom:4px;}
+  .sub{font-size:10px;color:#3d6070;letter-spacing:.15em;margin-bottom:32px;}
+  .section{margin-bottom:28px;}
+  .section-title{font-size:8px;letter-spacing:.2em;color:#3d6070;margin-bottom:12px;border-bottom:1px solid #1e3040;padding-bottom:6px;}
+  .score-big{font-family:Syne,sans-serif;font-size:52px;font-weight:800;color:#c678ff;line-height:1;}
+  .score-label{font-size:10px;color:#c678ff;letter-spacing:.15em;margin-top:4px;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+  .card{border:1px solid #1e3040;padding:16px;background:#0d1318;}
+  .card-title{font-size:7px;letter-spacing:.15em;color:#3d6070;margin-bottom:8px;}
+  .card-val{font-size:13px;color:#ddeeff;}
+  .proj-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #111820;}
+  .proj-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .proj-name{font-size:11px;font-weight:bold;color:#ddeeff;margin-bottom:2px;}
+  .proj-sub{font-size:8px;color:#3d6070;margin-bottom:4px;}
+  .proj-next{font-size:8px;color:#7aabcc;}
+  .tag{display:inline-block;font-size:7px;padding:2px 6px;border:1px solid #1e3040;margin:1px;color:#7aabcc;}
+  .thread{font-size:9px;color:#7aabcc;padding:3px 0;border-bottom:1px solid #111820;}
+  .pair-amplify{color:#a8ff78;font-size:9px;padding:2px 0;}
+  .footer{margin-top:40px;font-size:7px;color:#3d6070;border-top:1px solid #1e3040;padding-top:12px;letter-spacing:.1em;}
+  a{color:#00d4ff;}
+</style>
+</head>
+<body>
+<h1>NEXUS-M</h1>
+<div class="sub">FOUNDER ECOSYSTEM SNAPSHOT · ${now.toUpperCase()} · CAPTAIN MIG</div>
+
+<div class="section">
+  <div class="section-title">ECOSYSTEM COHERENCE</div>
+  <div style="display:flex;align-items:flex-end;gap:20px;margin-bottom:16px">
+    <div><div class="score-big">${ecoScore}</div><div class="score-label">${scoreLabel} CONVERGENCE</div></div>
+    <div style="flex:1;padding-bottom:8px;font-size:9px;color:#7aabcc;line-height:1.7">
+      Portfolio built around a coherent intellectual core: temporal mechanics, 
+      decision intelligence, and living data systems. Each venture amplifies the others.
+    </div>
+  </div>
+  <div class="section-title">DOMINANT THREADS · ${topThreads.length} cross-project topics</div>
+  ${topThreads.map(t=>`<span class="tag" style="border-color:#ffd16644;color:#ffd166">${t}</span>`).join('')}
+</div>
+
+<div class="section">
+  <div class="section-title">VENTURES (${PROJECTS.length})</div>
+  ${PROJECTS.map(p=>`
+    <div class="proj-row">
+      <div class="proj-dot" style="background:${p.color}"></div>
+      <div style="flex:1">
+        <div class="proj-name" style="color:${p.color}">${p.name}</div>
+        <div class="proj-sub">${p.sub}</div>
+        ${p.next_actions&&p.next_actions[0]?`<div class="proj-next">→ ${p.next_actions[0]}</div>`:''}
+        <div style="margin-top:4px">
+          ${p.url?`<a href="${p.url}" style="font-size:7px;color:${p.color}">↗ LIVE</a>`:''}
+          <span style="font-size:7px;color:#3d6070;margin-left:8px">${p.stage}</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:7px;color:#3d6070">${p.status.toUpperCase()}</div>
+        <div style="font-size:8px;color:${p.color}">${p.ver}</div>
+      </div>
+    </div>`).join('')}
+</div>
+
+<div class="row">
+  <div class="card">
+    <div class="card-title">AMPLIFYING PAIRS (${amplify.length})</div>
+    ${amplify.slice(0,6).map(r=>`<div class="pair-amplify">⬆ ${r.a.name.split(' ')[0]} × ${r.b.name.split(' ')[0]} <span style="color:#3d6070;float:right">${r.score}</span></div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="card-title">CAPITAL ROADMAP</div>
+    <div class="card-val" style="color:#ff6b35;font-size:28px;font-family:Syne,sans-serif">$4.5M</div>
+    <div style="font-size:8px;color:#3d6070;margin-top:6px">NERVA Seed $3M · Q2 2026<br>AdPulse Pre-Seed $1.5M · Late 2026</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">MARKET SIGNALS</div>
+  ${SIGNALS.filter(s=>s.urgency==='HIGH').slice(0,5).map(s=>`
+    <div class="thread">
+      <span style="color:${s.color}">● </span>${s.text}
+      <span style="color:#3d6070;float:right;font-size:7px">${s.cat}</span>
+    </div>`).join('')}
+</div>
+
+<div class="footer">
+  GENERATED BY NEXUS-M v7.2 · CAPTAIN MIG · nexus-m.vercel.app
+  · CONFIDENTIAL — NOT FOR DISTRIBUTION
+</div>
+</body>
+</html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`nexus-m-snapshot-${new Date().toISOString().slice(0,10)}.html`;
+  a.click();URL.revokeObjectURL(a.href);
+}
+
+window.addEventListener('load',()=>{
+  applyTheme();
+  renderSidebar();
+  updateEmptyState();
+  initCanvas();
+  initTL();
+  // Fetch live data on load and every 5 minutes
+  fetchLiveSignals();
+  setInterval(fetchLiveSignals, 300000);
+  setInterval(()=>{if(rpMode==='signals')renderSignals();},15000);
+});
+</script>
+</body>
+</html>
