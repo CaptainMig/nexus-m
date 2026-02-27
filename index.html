@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v7.4</title>
+<title>NEXUS-M v7.5</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v7.4 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v7.5 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -553,6 +553,32 @@ const PROJECTS_DEFAULT = [
     next_actions:['Define Goodness Score methodology v1','Recruit 3 pilot brands for index validation','Connect index data feed to AdPulse dashboard'],
     blockers:['Need brand advertiser buy-in on non-standard metrics','Index methodology needs academic validation'],
     ask:'Brand marketers open to alternative performance measurement'
+  },
+  {
+    id:'chartsme',name:'CHARTS ME',sub:'Anthony Charts — Personal Intelligence Dashboard',
+    color:'#00ffb3',status:'active',stage:'v5 Live — Mobile Optimized',ver:'v5',launch:'API enrichment Q3 2026',
+    topics:['personal intelligence','health data','radar index','samsung health','collapse engine','real-time data','self-tracking','TARS architecture','market data'],
+    markets:['Personal Analytics','Health Tech','Self-Quantification'],
+    url:'https://anthony-charts-me.vercel.app',
+    x:0.18,y:0.35,r:28,
+    milestones:[{d:'2026-01',l:'v4 live'},{d:'2026-02',l:'v5 mobile optimized'},{d:'2026-02',l:'radar index live'},{d:'2026-06',l:'Samsung Health API'},{d:'2026-09',l:'real market data'}],
+    signals:['Personal health data APIs opening up','Self-quantification market growing fast','TARS collapse engine unique architecture','Samsung Health partnership opportunity'],
+    next_actions:['Integrate Samsung Health API for live health data','Connect real market data feed','Publish TARS collapse engine methodology'],
+    blockers:['Samsung Health API access requires approval','Real market data requires paid API subscription'],
+    ask:'Health data API partnerships + personal finance data access'
+  },
+  {
+    id:'nexusm',name:'NEXUS-M',sub:'Self-Tracking Intelligence — The System Watches Itself',
+    color:'#ff00ff',status:'active',stage:'v7.4 Live — Self-Aware',ver:'v7.4',launch:'v8 Q2 2026',
+    topics:['meta intelligence','self-tracking','system architecture','dashboard','convergence','decision field','temporal mechanics','deployment velocity','version control'],
+    markets:['Internal Tools','AI Infrastructure','Meta-Systems'],
+    url:'https://nexus-m.vercel.app',
+    x:0.50,y:0.15,r:26,
+    milestones:[{d:'2026-01',l:'v4 launch'},{d:'2026-02',l:'v6 export'},{d:'2026-02',l:'v7 mobile'},{d:'2026-02',l:'v7.4 timeline'},{d:'2026-06',l:'v8 live API'}],
+    signals:['Self-referential tracking is on-brand for NERVA','System velocity visible = investor confidence','Meta-layer closes the ecosystem loop','NEXUS-M is the proof-of-concept for NERVA UI'],
+    next_actions:['Add deployment velocity metric to convergence score','Wire live GitHub commit count as signal','Show NEXUS-M in every investor demo as proof of build speed'],
+    blockers:['Self-reference creates philosophical recursion (feature not bug)'],
+    ask:'The system is the pitch — show it to everyone'
   }
 ];
 
@@ -564,7 +590,8 @@ const LIVE_SITES = [
   {label:'Anthony Charts',url:'https://anthonycharts.com',color:'#a8ff78'},
   {label:'AdPulse v1 ★',url:'https://anthonychartsads.vercel.app',color:'#ff6b35'},
   {label:'Charts Ads Index ★',url:'https://anthony-charts-ad-index.vercel.app',color:'#ffd166'},
-  {label:'NEXUS-M',url:'https://nexus-m.vercel.app',color:'#c678ff'},
+  {label:'Charts Me v5 ★',url:'https://anthony-charts-me.vercel.app',color:'#00ffb3'},
+  {label:'NEXUS-M ★',url:'https://nexus-m.vercel.app',color:'#ff00ff'},
 ];
 
 const CONNECTIONS = [
@@ -578,6 +605,12 @@ const CONNECTIONS = [
   {from:'acadsindex',to:'charts',type:'data',label:'Cultural energy from Charts data',strength:.85},
   {from:'acadsindex',to:'nerva',type:'strategic',label:'Goodness scoring → decision integrity',strength:.60},
   {from:'charts',to:'acadsindex',type:'data',label:'World signals power the index',strength:.80},
+  {from:'chartsme',to:'charts',type:'tech',label:'Personal layer of world intelligence',strength:.85},
+  {from:'chartsme',to:'nerva',type:'strategic',label:'Personal decision data feeds NERVA',strength:.70},
+  {from:'nexusm',to:'nerva',type:'strategic',label:'NEXUS-M is NERVA UI proof-of-concept',strength:.95},
+  {from:'nexusm',to:'charts',type:'data',label:'Ecosystem map powered by Charts data',strength:.75},
+  {from:'nexusm',to:'chartsme',type:'tech',label:'Self-tracking mirrors Charts Me architecture',strength:.80},
+  {from:'nexusm',to:'acadsindex',type:'strategic',label:'Meta-layer tracks all ventures',strength:.70},
 ];
 
 const FUND_CONNS = [
@@ -621,6 +654,8 @@ const WORLD_EVENTS = [
 ];
 
 const SIGNALS = [
+  {text:'NEXUS-M v7.4 deployed — self-tracking active',detail:'System now tracks its own development velocity — recursive intelligence proof of concept',color:'#ff00ff',cat:'NEXUS-M',urgency:'HIGH',age:'now'},
+  {text:'Charts Me v5 — collapse engine live',detail:'TARS architecture deployed, mobile optimized, radar index active',color:'#00ffb3',cat:'CHARTS ME',urgency:'MED',age:'1d'},
   {text:'Brand goodness scoring — new ad KPI emerging',detail:'Advertisers demanding post-cookie alternatives — Charts Ads Index perfectly timed',color:'#ffd166',cat:'CHARTS ADS',urgency:'HIGH',age:'1h'},
   {text:'Quantum AI investment up 340% YoY',detail:'DOD + 3 Tier-1 VCs entering space — NERVA timing critical',color:'#00d4ff',cat:'NERVA',urgency:'HIGH',age:'2h'},
   {text:'Cookie deprecation final rollout confirmed',detail:'Chrome deprecating 3rd-party cookies Q3 2026 — AdPulse window opens',color:'#ff6b35',cat:'ADPULSE',urgency:'HIGH',age:'4h'},
@@ -637,7 +672,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '7.4';
+const DATA_VERSION = '7.5';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -1906,7 +1941,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v7.4 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v7.5 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
@@ -1934,4 +1969,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v7.4b -->
+<!-- v7.5 -->
