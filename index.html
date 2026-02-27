@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v7.3</title>
+<title>NEXUS-M v7.4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -308,6 +308,28 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
   color:var(--text-mid);font-size:16px;cursor:pointer;margin-right:4px;
 }
 
+/* INTERACTIVE TIMELINE TOOLTIP */
+#tl-tooltip{
+  position:absolute;
+  background:var(--bg);
+  border:1px solid var(--border);
+  padding:8px 12px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:var(--text);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .15s;
+  z-index:200;
+  max-width:220px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  white-space:nowrap;
+}
+#tl-tooltip.show{opacity:1;}
+#tl-tooltip .tt-proj{font-size:8px;letter-spacing:.1em;margin-bottom:3px;}
+#tl-tooltip .tt-date{font-size:8px;color:var(--text-dim);margin-bottom:2px;}
+#tl-tooltip .tt-label{font-size:11px;font-weight:bold;}
+
 /* MODAL */
 #modal-bg{
   position:fixed;inset:0;background:rgba(0,0,0,0.7);
@@ -332,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v7.3 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v7.4 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -422,6 +444,11 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="timeline">
   <canvas id="tl-canvas"></canvas>
+  <div id="tl-tooltip">
+    <div class="tt-proj" id="tl-tt-proj"></div>
+    <div class="tt-date" id="tl-tt-date"></div>
+    <div class="tt-label" id="tl-tt-label"></div>
+  </div>
   <div id="tl-btns">
     <button class="tl-btn on" data-layer="projects">PROJECTS</button>
     <button class="tl-btn on" data-layer="cultural">CULTURAL</button>
@@ -610,7 +637,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '7.3b';
+const DATA_VERSION = '7.4';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -1482,20 +1509,56 @@ function initTL(){
   tlCv=document.getElementById('tl-canvas');
   tlCtx=tlCv.getContext('2d');
   sizeTL();
+  initTLInteraction();
 }
+let TL_HITS=[];  // hit areas for hover
+
 function sizeTL(){
   const tl=document.getElementById('timeline');
   TLW=tl.offsetWidth||window.innerWidth-220;
-  TLH=tl.offsetHeight||80;
+  TLH=tl.offsetHeight||100;
   if(TLW<10||TLH<10)return;
   tlCv.width=TLW;tlCv.height=TLH;
   drawTL();
+}
+
+function initTLInteraction(){
+  const tooltip=document.getElementById('tl-tooltip');
+  tlCv.addEventListener('mousemove',e=>{
+    const rect=tlCv.getBoundingClientRect();
+    const mx=e.clientX-rect.left, my=e.clientY-rect.top;
+    let hit=null;
+    for(const h of TL_HITS){
+      const dx=mx-h.x, dy=my-h.y;
+      if(Math.sqrt(dx*dx+dy*dy)<12){hit=h;break;}
+    }
+    if(hit){
+      document.getElementById('tl-tt-proj').textContent=hit.proj;
+      document.getElementById('tl-tt-proj').style.color=hit.color;
+      document.getElementById('tl-tt-date').textContent=hit.date;
+      document.getElementById('tl-tt-label').textContent=hit.label;
+      document.getElementById('tl-tt-label').style.color=hit.color;
+      // Position tooltip above cursor
+      let tx=e.clientX-rect.left+10;
+      let ty=e.clientY-rect.top-60;
+      if(ty<5)ty=e.clientY-rect.top+15;
+      tooltip.style.left=tx+'px';
+      tooltip.style.top=ty+'px';
+      tooltip.classList.add('show');
+      tlCv.style.cursor='pointer';
+    } else {
+      tooltip.classList.remove('show');
+      tlCv.style.cursor='default';
+    }
+  });
+  tlCv.addEventListener('mouseleave',()=>tooltip.classList.remove('show'));
 }
 function dToX(ds){return((new Date(ds)-TL_START)/TL_RANGE)*(TLW-100)+50;}
 
 function drawTL(){
   if(!tlCtx||!TLW||!TLH)return;
   tlCtx.clearRect(0,0,TLW,TLH);
+  TL_HITS=[];
   const lc=isDark?'#1e3040':'#8ca0b4', tc=isDark?'#3d6070':'#0a1628';
   const activeLayers=Array.from(document.querySelectorAll('.tl-btn.on')).map(b=>b.dataset.layer);
 
@@ -1510,8 +1573,8 @@ function drawTL(){
     tlCtx.beginPath();tlCtx.moveTo(x,TLH/2-2);tlCtx.lineTo(x,TLH/2+2);
     tlCtx.strokeStyle=lc;tlCtx.lineWidth=1;tlCtx.stroke();
     if(d.getMonth()%3===0){
-      tlCtx.font='6px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
-      tlCtx.fillText(`${d.toLocaleString('default',{month:'short'})} '${String(d.getFullYear()).slice(2)}`,x,TLH-4);
+      tlCtx.font='8px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
+      tlCtx.fillText(`${d.toLocaleString('default',{month:'short'})} '${String(d.getFullYear()).slice(2)}`,x,TLH-5);
     }
     d.setMonth(d.getMonth()+1);
   }
@@ -1520,8 +1583,8 @@ function drawTL(){
   const nowX=dToX(new Date().toISOString().slice(0,7));
   tlCtx.beginPath();tlCtx.moveTo(nowX,2);tlCtx.lineTo(nowX,TLH-14);
   tlCtx.strokeStyle='#ff6b35';tlCtx.lineWidth=1.5;tlCtx.stroke();
-  tlCtx.font='6px DM Mono,monospace';tlCtx.fillStyle='#ff6b35';tlCtx.textAlign='center';
-  tlCtx.fillText('NOW',nowX,9);
+  tlCtx.font='bold 9px DM Mono,monospace';tlCtx.fillStyle='#ff6b35';tlCtx.textAlign='center';
+  tlCtx.fillText('NOW',nowX,10);
 
   // Project milestones
   if(activeLayers.includes('projects')){
@@ -1529,12 +1592,15 @@ function drawTL(){
       (proj.milestones||[]).forEach((ms,i)=>{
         const x=dToX(ms.d);if(x<50||x>TLW-50)return;
         const yOff=pi%2===0?-14:14;
-        tlCtx.beginPath();tlCtx.arc(x,TLH/2,3,0,Math.PI*2);
+        tlCtx.beginPath();tlCtx.arc(x,TLH/2,5,0,Math.PI*2);
         tlCtx.fillStyle=proj.color;tlCtx.fill();
-        tlCtx.beginPath();tlCtx.moveTo(x,TLH/2+(yOff>0?3:-3));tlCtx.lineTo(x,TLH/2+yOff);
+        tlCtx.beginPath();tlCtx.arc(x,TLH/2,5,0,Math.PI*2);
+        tlCtx.strokeStyle=proj.color+'66';tlCtx.lineWidth=2;tlCtx.stroke();
+        tlCtx.beginPath();tlCtx.moveTo(x,TLH/2+(yOff>0?5:-5));tlCtx.lineTo(x,TLH/2+yOff);
         tlCtx.strokeStyle=proj.color+'55';tlCtx.lineWidth=1;tlCtx.stroke();
-        tlCtx.font='5.5px DM Mono,monospace';tlCtx.fillStyle=proj.color+'cc';tlCtx.textAlign='center';
-        tlCtx.fillText(ms.l,x,TLH/2+yOff+(yOff>0?7:-2));
+        tlCtx.font='bold 8px DM Mono,monospace';tlCtx.fillStyle=proj.color;tlCtx.textAlign='center';
+        tlCtx.fillText(ms.l,x,TLH/2+yOff+(yOff>0?10:-3));
+        TL_HITS.push({x,y:TLH/2,proj:proj.name,label:ms.l,date:ms.d,color:proj.color});
       });
     });
   }
@@ -1549,8 +1615,8 @@ function drawTL(){
     tlCtx.save();tlCtx.translate(x,10);tlCtx.rotate(Math.PI/4);
     tlCtx.fillStyle=evt.color;tlCtx.fillRect(-3,-3,6,6);
     tlCtx.restore();
-    tlCtx.font='5.5px DM Mono,monospace';tlCtx.fillStyle=evt.color+'aa';tlCtx.textAlign='center';
-    tlCtx.fillText(evt.l.slice(0,22),x,20);
+    tlCtx.font='7px DM Mono,monospace';tlCtx.fillStyle=evt.color+'cc';tlCtx.textAlign='center';
+    tlCtx.fillText(evt.l.slice(0,22),x,22);
   });
 }
 
@@ -1840,7 +1906,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v7.3 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v7.4 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
@@ -1868,4 +1934,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v7.4 -->
+<!-- v7.4b -->
