@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v7.5</title>
+<title>NEXUS-M v7.7</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v7.5 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v7.7 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -568,6 +568,45 @@ const PROJECTS_DEFAULT = [
     ask:'Health data API partnerships + personal finance data access'
   },
   {
+    id:'nervaglobe',name:'NERVA GLOBE',sub:'Signal Intelligence Surface — v9 Global Decision Field',
+    color:'#39ff14',status:'active',stage:'v9 Live — Signal Intelligence',ver:'v9',launch:'API commercialization Q3 2026',
+    topics:['signal intelligence','geopolitical risk','quantum decision','entropy','opportunity surface','real estate','live data','bloch sphere','global nodes','insurance','climate','conflict'],
+    markets:['Defense Intelligence','Sovereign Wealth','Insurance','Real Estate','Hedge Funds'],
+    url:'https://nerva-globe.vercel.app',
+    x:0.65,y:0.72,r:32,
+    milestones:[{d:'2026-01',l:'v7 globe launch'},{d:'2026-02',l:'v9 live feeds'},{d:'2026-02',l:'opportunity surface'},{d:'2026-03',l:'real estate layer'},{d:'2026-06',l:'API commercial'}],
+    signals:['170+ nodes across 32 layers live','FEMA USGS NOAA feeds active','Opportunity surface: asymmetric entry signals','Real estate + county-level US intelligence','10-year civilizational time horizon slider'],
+    next_actions:['Package NERVA Globe API for institutional clients','Build white-label version for hedge fund partners','Connect directly to NERVA v8 decision engine'],
+    blockers:['Institutional data licensing for premium layers','Enterprise sales motion not yet defined'],
+    ask:'Defense tech, sovereign wealth, and insurance firms needing geopolitical signal intelligence'
+  },
+  {
+    id:'nervamarket',name:'NERVA MARKET',sub:'Trust Build — Market Signal Intelligence v7.3',
+    color:'#ff6b9d',status:'active',stage:'v7.3 Live — Trust Build',ver:'v7.3',launch:'commercial Q3 2026',
+    topics:['market intelligence','trust scoring','signal verification','financial signals','decision integrity','trust build','institutional','trading','risk'],
+    markets:['Financial Services','Hedge Funds','Trading Desks','Institutional Intelligence'],
+    url:'https://nerva-market.vercel.app',
+    x:0.30,y:0.72,r:28,
+    milestones:[{d:'2026-01',l:'v1 launch'},{d:'2026-02',l:'v7.3 trust build'},{d:'2026-06',l:'institutional pilot'},{d:'2026-09',l:'commercial launch'}],
+    signals:['Trust scoring differentiates from raw signal','Financial market signal integrity gap growing','Institutional demand for verified decision layers','NERVA trust layer unique vs competitors'],
+    next_actions:['Define trust scoring methodology v1','Identify 3 institutional pilot partners','Connect to NERVA Globe opportunity layer'],
+    blockers:['Trust scoring methodology needs validation','Regulatory considerations for financial signal products'],
+    ask:'Financial institutions and trading desks needing verified signal intelligence'
+  },
+  {
+    id:'torahlight',name:'TORAH LIGHT',sub:'Spiritual Intelligence — Light of Torah',
+    color:'#f7d794',status:'active',stage:'Live',ver:'v1',launch:'ongoing',
+    topics:['torah','spirituality','light','wisdom','jewish thought','meaning','values','AMDG','faith','contemplation'],
+    markets:['Spiritual Communities','Education','Personal Development'],
+    url:'https://torah-light.vercel.app',
+    x:0.15,y:0.65,r:24,
+    milestones:[{d:'2026-02',l:'v1 live'}],
+    signals:['Values-grounded work is a differentiator','Spiritual foundation informs decision integrity','AMDG — for the greater glory'],
+    next_actions:['Deepen content layer','Connect to The Red Desk narrative'],
+    blockers:[],
+    ask:'For those seeking light'
+  },
+  {
     id:'nexusm',name:'NEXUS-M',sub:'Self-Tracking Intelligence — The System Watches Itself',
     color:'#ff00ff',status:'active',stage:'v7.4 Live — Self-Aware',ver:'v7.4',launch:'v8 Q2 2026',
     topics:['meta intelligence','self-tracking','system architecture','dashboard','convergence','decision field','temporal mechanics','deployment velocity','version control'],
@@ -591,6 +630,9 @@ const LIVE_SITES = [
   {label:'AdPulse v1 ★',url:'https://anthonychartsads.vercel.app',color:'#ff6b35'},
   {label:'Charts Ads Index ★',url:'https://anthony-charts-ad-index.vercel.app',color:'#ffd166'},
   {label:'Charts Me v5 ★',url:'https://anthony-charts-me.vercel.app',color:'#00ffb3'},
+  {label:'NERVA Globe v9 ★',url:'https://nerva-globe.vercel.app',color:'#39ff14'},
+  {label:'NERVA Market v7.3 ★',url:'https://nerva-market.vercel.app',color:'#ff6b9d'},
+  {label:'Torah Light ★',url:'https://torah-light.vercel.app',color:'#f7d794'},
   {label:'NEXUS-M ★',url:'https://nexus-m.vercel.app',color:'#ff00ff'},
 ];
 
@@ -611,6 +653,13 @@ const CONNECTIONS = [
   {from:'nexusm',to:'charts',type:'data',label:'Ecosystem map powered by Charts data',strength:.75},
   {from:'nexusm',to:'chartsme',type:'tech',label:'Self-tracking mirrors Charts Me architecture',strength:.80},
   {from:'nexusm',to:'acadsindex',type:'strategic',label:'Meta-layer tracks all ventures',strength:.70},
+  {from:'nervaglobe',to:'nerva',type:'tech',label:'Globe is NERVA v9 visual surface',strength:.98},
+  {from:'nervaglobe',to:'charts',type:'data',label:'Geopolitical signals feed globe layers',strength:.85},
+  {from:'nervaglobe',to:'nexusm',type:'strategic',label:'Globe tracked as flagship product',strength:.80},
+  {from:'nervamarket',to:'nerva',type:'tech',label:'Market trust layer built on NERVA engine',strength:.92},
+  {from:'nervamarket',to:'nervaglobe',type:'strategic',label:'Globe signals feed market trust scores',strength:.80},
+  {from:'torahlight',to:'nerva',type:'strategic',label:'Values foundation of decision integrity',strength:.60},
+  {from:'torahlight',to:'reddesk',type:'strategic',label:'Spiritual narrative threads into memoir',strength:.75},
 ];
 
 const FUND_CONNS = [
@@ -654,6 +703,7 @@ const WORLD_EVENTS = [
 ];
 
 const SIGNALS = [
+  {text:'NERVA Globe v9 live — 170+ nodes, 32 layers',detail:'Signal intelligence surface with live FEMA, USGS, NOAA feeds. Opportunity surface finds asymmetric entries. Real estate layer added.',color:'#39ff14',cat:'NERVA GLOBE',urgency:'HIGH',age:'now'},
   {text:'NEXUS-M v7.4 deployed — self-tracking active',detail:'System now tracks its own development velocity — recursive intelligence proof of concept',color:'#ff00ff',cat:'NEXUS-M',urgency:'HIGH',age:'now'},
   {text:'Charts Me v5 — collapse engine live',detail:'TARS architecture deployed, mobile optimized, radar index active',color:'#00ffb3',cat:'CHARTS ME',urgency:'MED',age:'1d'},
   {text:'Brand goodness scoring — new ad KPI emerging',detail:'Advertisers demanding post-cookie alternatives — Charts Ads Index perfectly timed',color:'#ffd166',cat:'CHARTS ADS',urgency:'HIGH',age:'1h'},
@@ -672,7 +722,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '7.5';
+const DATA_VERSION = '7.7';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -1941,7 +1991,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v7.5 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v7.7 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
@@ -1969,4 +2019,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v7.5 -->
+<!-- v7.7 -->
