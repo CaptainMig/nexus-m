@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v8.2</title>
+<title>NEXUS-M v8.3</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v8.2 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v8.3 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -498,7 +498,7 @@ const PROJECTS_DEFAULT = [
     topics:['quantum decision','temporal mechanics','risk','coherence','entropy','bloch sphere','retrocausality'],
     markets:['Defense','Autonomous Vehicles','Finance'],
     url:'https://nerva-v8.vercel.app',
-    x:0.35,y:0.35,r:44,
+    x:0.42,y:0.42,r:44,
     milestones:[{d:'2025-06',l:'v5 live'},{d:'2025-10',l:'v7 live'},{d:'2026-02',l:'v8 dev'},{d:'2026-06',l:'$3M seed'}],
     signals:['Quantum AI investment up 340% YoY','DOD AI procurement expanding','Decision coherence trending in fintech','Euclid Ventures interest — Nic Poulos']
   },
@@ -510,7 +510,7 @@ const PROJECTS_DEFAULT = [
     url:'https://anthonycharts.com',
     x:0.65,y:0.30,r:34,
     milestones:[{d:'2025-08',l:'v4 launch'},{d:'2025-12',l:'v6 launch'},{d:'2026-05',l:'10yr data'},{d:'2026-09',l:'v7 target'}],
-    signals:['Climate API access expanding','Calm window — no competitor','Space weather going mainstream','Geo tension trackers gaining traction'],
+    signals:['Climate API access expanding','Calm window — no competitor','Space weather going mainstream','Geo tension trackers gaining traction','Data licensing to Plumb authenticity layer — potential rev stream'],
     next_actions:['Ship 10-year historical data layer','Add API endpoint for 3rd-party use','Publish methodology doc for credibility'],
     blockers:['API rate limits on satellite data feeds'],
     ask:'Data partnerships with NOAA / ESA for premium feeds'
@@ -573,7 +573,7 @@ const PROJECTS_DEFAULT = [
     topics:['signal intelligence','geopolitical risk','quantum decision','entropy','opportunity surface','real estate','live data','bloch sphere','global nodes','insurance','climate','conflict'],
     markets:['Defense Intelligence','Sovereign Wealth','Insurance','Real Estate','Hedge Funds'],
     url:'https://nerva-globe.vercel.app',
-    x:0.65,y:0.72,r:32,
+    x:0.72,y:0.62,r:32,
     milestones:[{d:'2026-01',l:'v7 globe launch'},{d:'2026-02',l:'v9 live feeds'},{d:'2026-02',l:'opportunity surface'},{d:'2026-03',l:'real estate layer'},{d:'2026-06',l:'API commercial'}],
     signals:['170+ nodes across 32 layers live','FEMA USGS NOAA feeds active','Opportunity surface: asymmetric entry signals','Real estate + county-level US intelligence','10-year civilizational time horizon slider'],
     next_actions:['Package NERVA Globe API for institutional clients','Build white-label version for hedge fund partners','Connect directly to NERVA v8 decision engine'],
@@ -586,7 +586,7 @@ const PROJECTS_DEFAULT = [
     topics:['market intelligence','trust scoring','signal verification','financial signals','decision integrity','trust build','institutional','trading','risk'],
     markets:['Financial Services','Hedge Funds','Trading Desks','Institutional Intelligence'],
     url:'https://nerva-market.vercel.app',
-    x:0.30,y:0.72,r:28,
+    x:0.22,y:0.55,r:28,
     milestones:[{d:'2026-01',l:'v1 launch'},{d:'2026-02',l:'v7.3 trust build'},{d:'2026-06',l:'institutional pilot'},{d:'2026-09',l:'commercial launch'}],
     signals:['Trust scoring differentiates from raw signal','Financial market signal integrity gap growing','Institutional demand for verified decision layers','NERVA trust layer unique vs competitors'],
     next_actions:['Define trust scoring methodology v1','Identify 3 institutional pilot partners','Connect to NERVA Globe opportunity layer'],
@@ -612,7 +612,7 @@ const PROJECTS_DEFAULT = [
     topics:['media audit','buyside accountability','OOH','optimization','authenticity','pricing','NERVA kernel','holdco conflict','media buying','airport media','brand safety','falsification'],
     markets:['Brand Advertisers','Media Agencies','Airport OOH','Out-of-Home','Audit Infrastructure'],
     url:'https://plumb-audit.vercel.app',
-    x:0.48,y:0.78,r:34,
+    x:0.30,y:0.22,r:34,
     milestones:[{d:'2026-01',l:'v1 prototype'},{d:'2026-02',l:'v3 full scorer'},{d:'2026-03',l:'OOH pilot'},{d:'2026-06',l:'brand client 1'},{d:'2026-09',l:'audit-as-a-service'}],
     signals:['Holdco principal buying conflict documented by ANA','IAS IPO at 3.7B — single layer audit','DoubleVerify at 4.5B — single layer audit','Plumb scores three layers simultaneously','Airport OOH is natural first market'],
     next_actions:['Run first live audit against a real IO','Identify 3 brand clients for pilot','Connect scorer to Clear Channel rate card data'],
@@ -625,7 +625,7 @@ const PROJECTS_DEFAULT = [
     topics:['meta intelligence','self-tracking','system architecture','dashboard','convergence','decision field','temporal mechanics','deployment velocity','version control'],
     markets:['Internal Tools','AI Infrastructure','Meta-Systems'],
     url:'https://nexus-m.vercel.app',
-    x:0.50,y:0.15,r:26,
+    x:0.55,y:0.10,r:26,
     milestones:[{d:'2026-01',l:'v4 launch'},{d:'2026-02',l:'v6 export'},{d:'2026-02',l:'v7 mobile'},{d:'2026-02',l:'v7.4 timeline'},{d:'2026-06',l:'v8 live API'}],
     signals:['Self-referential tracking is on-brand for NERVA','System velocity visible = investor confidence','Meta-layer closes the ecosystem loop','NEXUS-M is the proof-of-concept for NERVA UI'],
     next_actions:['Add deployment velocity metric to convergence score','Wire live GitHub commit count as signal','Show NEXUS-M in every investor demo as proof of build speed'],
@@ -682,6 +682,12 @@ const CONNECTIONS = [
   {from:'nervaglobe',to:'plumb',type:'strategic',label:'Globe signal intelligence validates Plumb context scores',strength:.70},
   {from:'nervamarket',to:'plumb',type:'strategic',label:'Market trust scores align with Plumb audit verdicts',strength:.78},
   {from:'charts',to:'plumb',type:'data',label:'World signals inform Plumb cultural truth scoring',strength:.72},
+  {from:'nerva',to:'plumb',type:'data',label:'NERVA entropy math flows into Plumb verdict calculation',strength:.95},
+  {from:'acadsindex',to:'plumb',type:'tech',label:'Brand index scores feed Plumb authenticity layer',strength:.88},
+  {from:'adpulse',to:'plumb',type:'tech',label:'AdPulse brand signals inform Plumb context scoring',strength:.82},
+  {from:'charts',to:'plumb',type:'data',label:'Anthony Charts cultural data funds Plumb data layer',strength:.78},
+  {from:'plumb',to:'nervamarket',type:'strategic',label:'Plumb audit verdicts align with NERVA Market trust scores',strength:.82},
+  {from:'nervaglobe',to:'plumb',type:'data',label:'Globe geopolitical signals validate Plumb context layer',strength:.68},
 ];
 
 const FUND_CONNS = [
@@ -749,7 +755,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '8.2';
+const DATA_VERSION = '8.3';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -1591,8 +1597,18 @@ function renderFunding(){
      status:'Validation phase',markets:'AdTech · Media · Brand Intelligence',
      thesis:'First AI brand intelligence layer post-cookie — capturing $890B attention economy gap',
      milestones:['v1 live ✓','Market validation ongoing →','Investor deck: Q4 2026','Raise: 2027']},
+    {id:'nervaglobe',name:'NERVA GLOBE',color:'#39ff14',target:'$1.2M',type:'Pre-Seed',timeline:'Q4 2026',
+     readiness:45,contacts:['Defense intelligence buyers','Insurance sector — catastrophe modeling','Sovereign wealth funds'],
+     status:'Commercial pilot recruiting',markets:'Defense · Insurance · Sovereign Wealth · Real Estate',
+     thesis:'170+ node signal intelligence surface — live FEMA/USGS/NOAA feeds. No competitor at this scope. Defense and insurance buyers pay $200K+ for inferior point solutions.',
+     milestones:['v9 live ✓','Live data feeds active ✓','Real estate layer live ✓','First institutional demo →','Commercial pilot: Q3 2026']},
+    {id:'nervamarket',name:'NERVA MARKET',color:'#ff6b9d',target:'$600K',type:'Pre-Seed',timeline:'2027',
+     readiness:30,contacts:['Financial services firms','Trading desk contacts'],
+     status:'Trust build prototype live',markets:'Financial Services · Trading · Institutional Intelligence',
+     thesis:'Trust scoring layer for financial signal intelligence — fills the gap between raw data and actionable verdicts in trading environments.',
+     milestones:['v7.3 live ✓','Trust build engine active ✓','Institutional pilot recruiting →','Raise: 2027']},
   ];
-  const total='$7.0M';
+  const total='$8.8M';
   document.getElementById('rpanel-inner').innerHTML=`
     <div class="rp-title" style="color:#ff6b35">FUNDING PATHWAY</div>
     <div class="rp-sub">CAPITAL TARGETS & RAISE READINESS</div>
@@ -1626,9 +1642,12 @@ function renderFunding(){
       <div class="conv-card-title">PORTFOLIO TOTAL</div>
       <div class="conv-big" style="color:#ff6b35">${total}</div>
       <div style="font-size:6.5px;color:var(--text-mid);margin-top:4px;line-height:1.6">
-        Three-vehicle capital strategy. <strong style="color:#a78bfa">Plumb leads</strong> — proven market, named buyer, structural moat, founder-market fit. 
-        NERVA follows as the decision engine powering Plumb at scale. AdPulse closes the brand intelligence loop. 
-        Shared investor narrative: <em style="color:#ffd166">The Media Accountability Stack.</em>
+        Five-vehicle capital strategy. <strong style="color:#a78bfa">Plumb leads</strong> — proven market, named buyer, structural moat, 20+ years founder-market fit. 
+        <strong style="color:#00d4ff">NERVA</strong> is the decision engine powering everything. 
+        <strong style="color:#39ff14">NERVA Globe</strong> demonstrates the engine at civilizational scale — defense and insurance entry point. 
+        <strong style="color:#ff6b9d">NERVA Market</strong> captures financial signal intelligence. 
+        <strong style="color:#ff6b35">AdPulse</strong> closes the brand loop. 
+        Shared investor narrative: <em style="color:#ffd166">The Decision Intelligence Stack — one kernel, five markets.</em>
       </div>
     </div>`;
   const fo=OVERLAYS.find(o=>o.id==='funding');
@@ -2048,7 +2067,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v8.2 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v8.3 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
@@ -2076,4 +2095,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v8.2 -->
+<!-- v8.3 -->
