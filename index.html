@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v7.7</title>
+<title>NEXUS-M v8.1</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v7.7 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v8.1 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -607,6 +607,19 @@ const PROJECTS_DEFAULT = [
     ask:'For those seeking light'
   },
   {
+    id:'plumb',name:'PLUMB',sub:'Three-Layer Buyside Audit — AC Ads v3',
+    color:'#a78bfa',status:'active',stage:'v3 Live — Prototype',ver:'v3',launch:'commercial Q3 2026',
+    topics:['media audit','buyside accountability','OOH','optimization','authenticity','pricing','NERVA kernel','holdco conflict','media buying','airport media','brand safety','falsification'],
+    markets:['Brand Advertisers','Media Agencies','Airport OOH','Out-of-Home','Audit Infrastructure'],
+    url:'https://plumb-audit.vercel.app',
+    x:0.48,y:0.78,r:34,
+    milestones:[{d:'2026-01',l:'v1 prototype'},{d:'2026-02',l:'v3 full scorer'},{d:'2026-03',l:'OOH pilot'},{d:'2026-06',l:'brand client 1'},{d:'2026-09',l:'audit-as-a-service'}],
+    signals:['Holdco principal buying conflict documented by ANA','IAS IPO at 3.7B — single layer audit','DoubleVerify at 4.5B — single layer audit','Plumb scores three layers simultaneously','Airport OOH is natural first market'],
+    next_actions:['Run first live audit against a real IO','Identify 3 brand clients for pilot','Connect scorer to Clear Channel rate card data'],
+    blockers:['Need real closed audit corpus to validate lift claims','Pricing model not finalized'],
+    ask:'Brand advertisers and CMOs who have lost trust in agency-recommended buys'
+  },
+  {
     id:'nexusm',name:'NEXUS-M',sub:'Self-Tracking Intelligence — The System Watches Itself',
     color:'#ff00ff',status:'active',stage:'v7.4 Live — Self-Aware',ver:'v7.4',launch:'v8 Q2 2026',
     topics:['meta intelligence','self-tracking','system architecture','dashboard','convergence','decision field','temporal mechanics','deployment velocity','version control'],
@@ -633,6 +646,7 @@ const LIVE_SITES = [
   {label:'NERVA Globe v9 ★',url:'https://nerva-globe.vercel.app',color:'#39ff14'},
   {label:'NERVA Market v7.3 ★',url:'https://nerva-market.vercel.app',color:'#ff6b9d'},
   {label:'Torah Light ★',url:'https://torah-light.vercel.app',color:'#f7d794'},
+  {label:'Plumb Audit v3 ★',url:'https://plumb-audit.vercel.app',color:'#a78bfa'},
   {label:'NEXUS-M ★',url:'https://nexus-m.vercel.app',color:'#ff00ff'},
 ];
 
@@ -660,6 +674,9 @@ const CONNECTIONS = [
   {from:'nervamarket',to:'nervaglobe',type:'strategic',label:'Globe signals feed market trust scores',strength:.80},
   {from:'torahlight',to:'nerva',type:'strategic',label:'Values foundation of decision integrity',strength:.60},
   {from:'torahlight',to:'reddesk',type:'strategic',label:'Spiritual narrative threads into memoir',strength:.75},
+  {from:'plumb',to:'nerva',type:'tech',label:'Plumb verdict engine runs on NERVA kernel',strength:.92},
+  {from:'plumb',to:'acadsindex',type:'data',label:'Audit scores feed Charts Ads Index',strength:.85},
+  {from:'plumb',to:'adpulse',type:'strategic',label:'Plumb verdicts inform AdPulse signals',strength:.80},
 ];
 
 const FUND_CONNS = [
@@ -703,6 +720,11 @@ const WORLD_EVENTS = [
 ];
 
 const SIGNALS = [
+  {text:'Plumb v3 live — holdco conflict scoring engine active',detail:'Three-layer buyside audit (Optimization, Authenticity, Pricing) with NERVA verdict kernel. IAS went public at $3.7B on one layer. Plumb scores three.',color:'#a78bfa',cat:'PLUMB',urgency:'HIGH',age:'now'},
+  {text:'ANA principal buying report — conflict documented industry-wide',detail:'Association of National Advertisers confirms holdco principal buying creates structural conflict of interest. Plumb is the structural answer.',color:'#a78bfa',cat:'PLUMB',urgency:'HIGH',age:'2h'},
+  {text:'Plumb × NERVA convergence — verdict engine integration confirmed',detail:'Plumb COMMIT/CONSULT/HOLD/WAIT/TOXIC verdicts now run on NERVA quantum kernel. Highest convergence pair in ecosystem at .92 strength.',color:'#a78bfa',cat:'PLUMB',urgency:'HIGH',age:'4h'},
+  {text:'Media agency fee compression accelerating',detail:'Programmatic automation eliminating operational margin — brands seeking independent audit infrastructure. Plumb timing optimal.',color:'#a78bfa',cat:'PLUMB',urgency:'HIGH',age:'6h'},
+  {text:'Airport OOH: $1.2B category — no independent audit layer exists',detail:'Clear Channel, JCDecaux, Outfront — zero falsifiable audit infrastructure. Plumb fills structural gap in the category the founder knows best.',color:'#a78bfa',cat:'PLUMB',urgency:'HIGH',age:'8h'},
   {text:'NERVA Globe v9 live — 170+ nodes, 32 layers',detail:'Signal intelligence surface with live FEMA, USGS, NOAA feeds. Opportunity surface finds asymmetric entries. Real estate layer added.',color:'#39ff14',cat:'NERVA GLOBE',urgency:'HIGH',age:'now'},
   {text:'NEXUS-M v7.4 deployed — self-tracking active',detail:'System now tracks its own development velocity — recursive intelligence proof of concept',color:'#ff00ff',cat:'NEXUS-M',urgency:'HIGH',age:'now'},
   {text:'Charts Me v5 — collapse engine live',detail:'TARS architecture deployed, mobile optimized, radar index active',color:'#00ffb3',cat:'CHARTS ME',urgency:'MED',age:'1d'},
@@ -722,7 +744,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '7.7';
+const DATA_VERSION = '8.1';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -1438,7 +1460,11 @@ function computeEcosystemScore(){
   const penalty=tension.reduce((s,r)=>s+r.score*.3,0)/Math.max(tension.length||1,1);
   const activeBonus=PROJECTS.filter(p=>p.status==='active').length*3;
   const urlBonus=PROJECTS.filter(p=>p.url).length*2;
-  return Math.min(99,Math.round(baseScore-penalty+activeBonus+urlBonus));
+  // Plumb × NERVA convergence bonus — highest strength connection in ecosystem
+  const plumb=PROJECTS.find(p=>p.id==='plumb');
+  const nerva=PROJECTS.find(p=>p.id==='nerva');
+  const convergenceBonus=(plumb&&nerva)?8:0;
+  return Math.min(99,Math.round(baseScore-penalty+activeBonus+urlBonus+convergenceBonus));
 }
 
 function renderConvergence(){
@@ -1493,6 +1519,17 @@ function renderConvergence(){
           <span style="color:#a8ff78;font-weight:bold">${r.score}</span>
         </div>`).join('')}
     </div>
+    <div class="conv-card" style="border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.04)">
+      <div class="conv-card-title" style="color:#a78bfa">★ LEAD CONVERGENCE PAIR</div>
+      <div style="font-size:7px;color:#a78bfa;font-weight:bold;margin-bottom:4px">PLUMB × NERVA — .92 strength</div>
+      <div style="font-size:6.5px;color:var(--text-mid);line-height:1.7">
+        Highest convergence in the ecosystem. Plumb's three-layer verdict engine runs on the NERVA quantum kernel — 
+        COMMIT/CONSULT/HOLD/WAIT/TOXIC applied to every media buy. This is not an integration. 
+        It is the same decision architecture operating at a different scale: 
+        <strong style="color:#a78bfa">one media IO</strong> vs <strong style="color:#39ff14">one geopolitical field</strong>. 
+        Same math. Same falsification standard. Different market.
+      </div>
+    </div>
     ${tension.length?`<div class="conv-card">
       <div class="conv-card-title" style="color:#ff6b35">TENSIONS</div>
       ${tension.map(r=>`
@@ -1505,11 +1542,13 @@ function renderConvergence(){
     <div class="conv-card" style="border-color:rgba(0,212,255,.2)">
       <div class="conv-card-title" style="color:#00d4ff">FOUNDER BRIEF</div>
       <div style="font-size:6.5px;color:var(--text-mid);line-height:1.7">
-        Your portfolio is built around a coherent intellectual core: <strong style="color:#ffd166">temporal mechanics</strong>, 
-        <strong style="color:#ffd166">decision intelligence</strong>, and <strong style="color:#ffd166">living data systems</strong>. 
-        NERVA provides the scientific legitimacy. Anthony Charts provides the data substrate. 
-        AdPulse captures the commercial wedge. The Red Desk provides the narrative origin. 
-        Together they form an ecosystem that is more than the sum of its parts.
+        Your portfolio has a clear commercial lead: <strong style="color:#a78bfa">Plumb</strong> — the buyside audit layer holdcos structurally cannot build, 
+        backed by 20+ years of OOH expertise and active brand relationships. 
+        <strong style="color:#00d4ff">NERVA</strong> is the decision engine underneath it, validated at civilizational scale through the Globe. 
+        <strong style="color:#ffd166">Anthony Charts</strong> provides the data substrate. 
+        <strong style="color:#ff6b35">AdPulse</strong> captures the brand intelligence wedge post-Plumb. 
+        <strong style="color:#e06c75">The Red Desk</strong> is the narrative origin that explains why this founder built this stack. 
+        The through-line: decision integrity — from a single media buy to geopolitical signal fields. AMDG.
       </div>
     </div>`;
   // Add export button at bottom
@@ -1525,18 +1564,23 @@ function renderConvergence(){
 
 function renderFunding(){
   const fundData=[
-    {id:'nerva',name:'NERVA',color:'#00d4ff',target:'$3.0M',type:'Seed Round',timeline:'Q2 2026',
+    {id:'plumb',name:'PLUMB',color:'#a78bfa',target:'$2.5M',type:'Seed Round',timeline:'Q3 2026',
+     readiness:65,contacts:['ANA-connected brand CMOs','Clear Channel brand relationships','Independent media auditors','AdTech-focused angels'],
+     status:'Primary raise — active',markets:'Brand Advertisers · OOH · Agency Audit · Media Infrastructure',
+     thesis:'IAS went public at $3.7B on one audit layer. DoubleVerify at $4.5B. Plumb scores three simultaneously — with a falsification record holdcos structurally cannot build. Founder has 20+ years of OOH buyside expertise and active brand relationships.',
+     milestones:['v3 scorer live ✓','NERVA kernel integrated ✓','OOH pilot recruiting →','First paid audit: Q3 2026','Term sheet target: Q3 2026']},
+    {id:'nerva',name:'NERVA',color:'#00d4ff',target:'$3.0M',type:'Seed Round',timeline:'Q4 2026',
      readiness:72,contacts:['Nic Poulos — Euclid Ventures','Rishad Tobaccowala — Strategic Advisor'],
      status:'Active outreach',markets:'Defense · AV · FinTech',
-     thesis:'Decision integrity layer for autonomous AI — $340B TAM',
-     milestones:['v8 deployed ✓','Pitch deck live ✓','First LP meetings →','Term sheet target Q2']},
-    {id:'adpulse',name:'ADPULSE',color:'#ff6b35',target:'$1.5M',type:'Pre-Seed',timeline:'Late 2026',
+     thesis:'Decision integrity layer for autonomous AI — $340B TAM. Powers the Plumb verdict engine. Globe surface demonstrates civilizational-scale signal intelligence.',
+     milestones:['v8 deployed ✓','Globe v9 live ✓','Pitch deck live ✓','First LP meetings →','Term sheet target Q4']},
+    {id:'adpulse',name:'ADPULSE',color:'#ff6b35',target:'$1.5M',type:'Pre-Seed',timeline:'2027',
      readiness:28,contacts:['AdTech angels (to be identified)'],
      status:'Validation phase',markets:'AdTech · Media · Brand Intelligence',
      thesis:'First AI brand intelligence layer post-cookie — capturing $890B attention economy gap',
-     milestones:['v1 live ✓','Market validation ongoing →','Investor deck: Q3 2026','Raise: Q4 2026']},
+     milestones:['v1 live ✓','Market validation ongoing →','Investor deck: Q4 2026','Raise: 2027']},
   ];
-  const total='$4.5M';
+  const total='$7.0M';
   document.getElementById('rpanel-inner').innerHTML=`
     <div class="rp-title" style="color:#ff6b35">FUNDING PATHWAY</div>
     <div class="rp-sub">CAPITAL TARGETS & RAISE READINESS</div>
@@ -1570,8 +1614,9 @@ function renderFunding(){
       <div class="conv-card-title">PORTFOLIO TOTAL</div>
       <div class="conv-big" style="color:#ff6b35">${total}</div>
       <div style="font-size:6.5px;color:var(--text-mid);margin-top:4px;line-height:1.6">
-        Two-vehicle capital strategy. NERVA leads as primary raise with highest readiness. 
-        AdPulse follows once NERVA closes. Shared investor narrative: <em style="color:#ffd166">The Temporal Intelligence Stack.</em>
+        Three-vehicle capital strategy. <strong style="color:#a78bfa">Plumb leads</strong> — proven market, named buyer, structural moat, founder-market fit. 
+        NERVA follows as the decision engine powering Plumb at scale. AdPulse closes the brand intelligence loop. 
+        Shared investor narrative: <em style="color:#ffd166">The Media Accountability Stack.</em>
       </div>
     </div>`;
   const fo=OVERLAYS.find(o=>o.id==='funding');
@@ -1991,7 +2036,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v7.7 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v8.1 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
@@ -2019,4 +2064,4 @@ window.addEventListener('load',()=>{
 </body>
 </html>
 
-<!-- v7.7 -->
+<!-- v8.1 -->
