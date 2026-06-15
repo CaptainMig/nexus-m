@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXUS-M v8.3</title>
+<title>NEXUS-M v8.4</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -269,7 +269,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
   background:var(--bg);border-top:2px solid var(--border);
   transition:height .3s ease;overflow:hidden;z-index:50;
 }
-#timeline.open{height:80px;}
+#timeline.open{height:150px;}
 #tl-canvas{position:absolute;top:0;left:0;}
 #tl-btns{position:absolute;top:5px;right:6px;display:flex;gap:2px;}
 .tl-btn{font-size:6px;padding:3px 6px;background:var(--bg);border:1px solid var(--border);color:var(--text-mid);cursor:pointer;transition:all .2s;}
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 
 <div id="header">
   <button id="btn-mobile-menu" onclick="toggleMobileMenu()" title="Menu">☰</button>
-  <span class="logo">NEXUS-M<span class="logo-v"> // v8.3 · CAPTAIN MIG</span></span>
+  <span class="logo">NEXUS-M<span class="logo-v"> // v8.4 · CAPTAIN MIG</span></span>
   <button class="hbtn on" id="btn-map">MAP</button>
   <button class="hbtn" id="btn-timeline">TIMELINE</button>
   <button class="hbtn" id="btn-convergence">CONVERGENCE</button>
@@ -385,11 +385,6 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
     <div class="sb-sec">
       <div class="sb-lbl">Overlays</div>
       <div id="ovr-list"></div>
-    </div>
-
-    <div class="sb-sec">
-      <div class="sb-lbl">Cultural Layers</div>
-      <div id="cult-list"></div>
     </div>
 
     <div class="sb-sec">
@@ -450,10 +445,8 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
     <div class="tt-label" id="tl-tt-label"></div>
   </div>
   <div id="tl-btns">
-    <button class="tl-btn on" data-layer="projects">PROJECTS</button>
-    <button class="tl-btn on" data-layer="cultural">CULTURAL</button>
-    <button class="tl-btn on" data-layer="social">SOCIAL</button>
-    <button class="tl-btn" data-layer="funding">FUNDING</button>
+    <button class="tl-btn on" data-mode="all">ALL</button>
+    <button class="tl-btn" data-mode="upcoming">UPCOMING</button>
   </div>
 </div>
 
@@ -494,12 +487,12 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-fam
 const PROJECTS_DEFAULT = [
   {
     id:'nerva',name:'NERVA',sub:'Neural Enhanced Risk & Value Assessment',
-    color:'#00d4ff',status:'active',stage:'Seed Round — $3M Target',ver:'v8',launch:'Q2 2026',
+    color:'#00d4ff',status:'active',stage:'Seed Round — $3M Target',ver:'v10',launch:'Q2 2026',
     topics:['quantum decision','temporal mechanics','risk','coherence','entropy','bloch sphere','retrocausality'],
     markets:['Defense','Autonomous Vehicles','Finance'],
-    url:'https://nerva-v8.vercel.app',
+    url:'https://nerva-v10.vercel.app',
     x:0.42,y:0.42,r:44,
-    milestones:[{d:'2025-06',l:'v5 live'},{d:'2025-10',l:'v7 live'},{d:'2026-02',l:'v8 dev'},{d:'2026-06',l:'$3M seed'}],
+    milestones:[{d:'2025-06',l:'v5 live'},{d:'2025-10',l:'v7 live'},{d:'2026-02',l:'v8 dev'},{d:'2026-04',l:'v10 live'},{d:'2026-06',l:'$3M seed'}],
     signals:['Quantum AI investment up 340% YoY','DOD AI procurement expanding','Decision coherence trending in fintech','Euclid Ventures interest — Nic Poulos']
   },
   {
@@ -631,11 +624,51 @@ const PROJECTS_DEFAULT = [
     next_actions:['Add deployment velocity metric to convergence score','Wire live GitHub commit count as signal','Show NEXUS-M in every investor demo as proof of build speed'],
     blockers:['Self-reference creates philosophical recursion (feature not bug)'],
     ask:'The system is the pitch — show it to everyone'
+  },
+  {
+    id:'nervashop',name:'NERVA SHOP',sub:'Agentic Shopping Assistant — Decision Layer for Commerce',
+    color:'#ff9f43',status:'beta',stage:'v1 Prototype',ver:'v1',launch:'v2 Q4 2026',
+    topics:['agentic AI','shopping assistant','commerce','decision intelligence','autonomous agents','product discovery','NERVA kernel','consumer'],
+    markets:['E-Commerce','Retail Tech','Consumer AI'],
+    url:'https://github.com/CaptainMig/NERVA_Agentic_Shopping_Assistant',
+    x:0.90,y:0.42,r:24,
+    milestones:[{d:'2026-05',l:'v1 prototype'},{d:'2026-10',l:'v2 target'}],
+    signals:['Agentic commerce emerging fast','Autonomous shopping agents gaining traction','NERVA decision kernel applied to consumer choice'],
+    next_actions:['Define the agent decision flow','Connect to live product catalogs','Pilot with a niche retail vertical'],
+    blockers:['Retail API access','Agent guardrails for autonomous purchases'],
+    ask:'Retail / e-commerce partners open to agentic checkout pilots'
+  },
+  {
+    id:'nervaprompt',name:'NERVA PROMPT',sub:'Universal Prompt System — Reasoning Scaffold',
+    color:'#54a0ff',status:'active',stage:'v1 Live',ver:'v1',launch:'ongoing',
+    topics:['prompt engineering','reasoning','LLM','universal prompts','AI tooling','decision scaffold','NERVA kernel','infrastructure'],
+    markets:['AI Infrastructure','Developer Tools','Internal Tools'],
+    url:'https://github.com/CaptainMig/Nerva_Prompt_Universal',
+    x:0.42,y:0.88,r:24,
+    milestones:[{d:'2026-06',l:'v1 live'}],
+    signals:['Reusable reasoning scaffolds across all NERVA products','Prompt infrastructure as a moat','Universal layer standardizes agent behavior'],
+    next_actions:['Document the universal prompt schema','Wire into NERVA + Shop + Globe','Version the prompt library'],
+    blockers:[],
+    ask:'Builders standardizing LLM reasoning across products'
+  },
+  {
+    id:'kcintel',name:'KC METRO INTEL',sub:'Kansas City Regional Intelligence Dashboard',
+    color:'#1dd1a1',status:'active',stage:'v1 Live',ver:'v1',launch:'ongoing',
+    topics:['regional intelligence','kansas city','metro data','local economy','civic data','geospatial','live data','real estate'],
+    markets:['Civic Tech','Regional Intelligence','Real Estate'],
+    url:'https://github.com/CaptainMig/kc-metro-intel',
+    x:0.88,y:0.80,r:24,
+    milestones:[{d:'2026-04',l:'v1 live'}],
+    signals:['Regional intelligence as a repeatable template','KC metro as proof-of-concept for city-level dashboards','County-level data aligns with NERVA Globe'],
+    next_actions:['Expand civic data sources','Template the model for other metros','Connect county data to NERVA Globe'],
+    blockers:['Local data source coverage'],
+    ask:'Civic / regional data partners in the KC metro'
   }
 ];
 
 const LIVE_SITES = [
-  {label:'NERVA v8 ★',url:'https://nerva-v8.vercel.app',color:'#00d4ff'},
+  {label:'NERVA v10 ★',url:'https://nerva-v10.vercel.app',color:'#00d4ff'},
+  {label:'NERVA v8',url:'https://nerva-v8.vercel.app',color:'#00d4ff'},
   {label:'NERVA v7',url:'https://nerva-v7.vercel.app',color:'#00d4ff'},
   {label:'NERVA v5',url:'https://nerva-v5.vercel.app',color:'#00d4ff'},
   {label:'NERVA Pitch',url:'https://nerva-pitch-live.vercel.app',color:'#00d4ff'},
@@ -688,6 +721,13 @@ const CONNECTIONS = [
   {from:'charts',to:'plumb',type:'data',label:'Anthony Charts cultural data funds Plumb data layer',strength:.78},
   {from:'plumb',to:'nervamarket',type:'strategic',label:'Plumb audit verdicts align with NERVA Market trust scores',strength:.82},
   {from:'nervaglobe',to:'plumb',type:'data',label:'Globe geopolitical signals validate Plumb context layer',strength:.68},
+  {from:'nervashop',to:'nerva',type:'tech',label:'Agentic layer on NERVA decision kernel',strength:.85},
+  {from:'nervashop',to:'nervamarket',type:'strategic',label:'Purchase decisions use market trust scores',strength:.60},
+  {from:'nervaprompt',to:'nerva',type:'tech',label:'Universal prompt scaffold powers NERVA reasoning',strength:.85},
+  {from:'nervaprompt',to:'nervashop',type:'tech',label:'Shared reasoning scaffold across agents',strength:.70},
+  {from:'nervaprompt',to:'nexusm',type:'strategic',label:'Prompt infrastructure tracked as core layer',strength:.55},
+  {from:'kcintel',to:'charts',type:'data',label:'Regional layer of Anthony Charts intelligence',strength:.80},
+  {from:'kcintel',to:'nervaglobe',type:'data',label:'County-level data feeds Globe layers',strength:.70},
 ];
 
 const FUND_CONNS = [
@@ -701,33 +741,6 @@ const OVERLAYS = [
   {id:'strategic',label:'Strategic Pathways',color:'#c678ff',on:true},
   {id:'data',label:'Data Flow',color:'#a8ff78',on:true},
   {id:'funding',label:'Funding Pathway',color:'#ff6b35',on:false},
-];
-
-const CULT_LAYERS = [
-  {id:'tech',label:'Tech Milestones',color:'#00d4ff',on:true},
-  {id:'social',label:'Social Signals',color:'#ff6b35',on:true},
-  {id:'geo',label:'Geopolitical',color:'#ffd166',on:true},
-];
-
-const WORLD_EVENTS = [
-  {d:'2025-05',l:'GPT-4o multimodal launch',type:'tech',color:'#00d4ff'},
-  {d:'2025-07',l:'GPT-5 launch — reasoning wave',type:'tech',color:'#00d4ff'},
-  {d:'2025-08',l:'#AIDecision goes viral',type:'social',color:'#ff6b35'},
-  {d:'2025-09',l:'EU AI Act enforcement begins',type:'geo',color:'#ffd166'},
-  {d:'2025-10',l:'DOD AI ethics mandate',type:'geo',color:'#ffd166'},
-  {d:'2025-11',l:'#QuantumAI trends globally',type:'social',color:'#ff6b35'},
-  {d:'2025-12',l:'Nature: Retrocausality paper',type:'tech',color:'#00d4ff'},
-  {d:'2026-01',l:'CES 2026 — AI hardware surge',type:'tech',color:'#00d4ff'},
-  {d:'2026-02',l:'Super Bowl AI ad moment',type:'social',color:'#ff6b35'},
-  {d:'2026-02',l:'NEXUS-M v4 launches',type:'tech',color:'#c678ff'},
-  {d:'2026-03',l:'SpaceX Starship operational',type:'geo',color:'#ffd166'},
-  {d:'2026-04',l:'SEC AI risk mandate finalized',type:'geo',color:'#ffd166'},
-  {d:'2026-05',l:'#ClimateData trending',type:'social',color:'#ff6b35'},
-  {d:'2026-06',l:'NERVA seed round target',type:'tech',color:'#00d4ff'},
-  {d:'2026-07',l:'DOD AI procurement open',type:'geo',color:'#ffd166'},
-  {d:'2026-09',l:'Quantum computing milestone',type:'tech',color:'#00d4ff'},
-  {d:'2026-12',l:'Red Desk manuscript due',type:'tech',color:'#c678ff'},
-  {d:'2027-01',l:'AdPulse v2 target',type:'tech',color:'#ff6b35'},
 ];
 
 const SIGNALS = [
@@ -755,7 +768,7 @@ const SIGNALS = [
 ];
 
 /* Projects from localStorage or defaults — version-gated cache busting */
-const DATA_VERSION = '8.3';
+const DATA_VERSION = '8.4';
 const storedVersion = localStorage.getItem('nexus-data-version');
 if(storedVersion !== DATA_VERSION){
   // New code version — wipe old cached projects so hardcoded defaults always win
@@ -812,7 +825,7 @@ function sizeCanvas(){
   const isMobile = window.innerWidth <= 768;
   const sideW = isMobile ? 0 : 220;
   const headerH = 48;
-  const tlH = document.getElementById('timeline').classList.contains('open') ? 80 : 0;
+  const tlH = document.getElementById('timeline').classList.contains('open') ? 150 : 0;
   const rpW = (!isMobile && document.getElementById('rpanel').classList.contains('open')) ? 260 : 0;
   W = window.innerWidth - sideW - rpW;
   H = window.innerHeight - headerH - tlH;
@@ -1177,11 +1190,6 @@ function renderSidebar(q=''){
       <span class="ovr-lbl" style="color:${o.on?'#7a9bb0':'#3d5566'}">${o.label}</span>
     </div>`).join('');
 
-  document.getElementById('cult-list').innerHTML=CULT_LAYERS.map(l=>`
-    <div class="ovr-row" onclick="toggleCult('${l.id}')">
-      <div class="ovr-box ${l.on?'on':''}" style="color:${l.color}"></div>
-      <span class="ovr-lbl" style="color:${l.on?'var(--text-mid)':'var(--text-dim)'}">${l.label}</span>
-    </div>`).join('');
   updateEmptyState();
 }
 
@@ -1342,7 +1350,6 @@ function toggleOvr(id){
   document.getElementById('fund-leg').style.display=OVERLAYS.find(o=>o.id==='funding').on?'flex':'none';
   renderSidebar();
 }
-function toggleCult(id){const l=CULT_LAYERS.find(x=>x.id===id);if(l)l.on=!l.on;renderSidebar();drawTL();}
 
 /* ═══════════════════════════════════════════════════════════════
    ADD PROJECT
@@ -1663,8 +1670,8 @@ function showBadge(){
    TIMELINE
 ═══════════════════════════════════════════════════════════════ */
 let tlCv, tlCtx, TLW=0, TLH=0;
-const TL_START=new Date('2025-01-01'), TL_END=new Date('2027-06-01');
-const TL_RANGE=TL_END-TL_START;
+let TLmin, TLmax, TLrange;   // computed live from project data each draw
+const TL_PAD=64;             // horizontal margin so edge labels stay readable
 
 function initTL(){
   tlCv=document.getElementById('tl-canvas');
@@ -1677,7 +1684,7 @@ let TL_HITS=[];  // hit areas for hover
 function sizeTL(){
   const tl=document.getElementById('timeline');
   TLW=tl.offsetWidth||window.innerWidth-220;
-  TLH=tl.offsetHeight||100;
+  TLH=tl.offsetHeight||150;
   if(TLW<10||TLH<10)return;
   tlCv.width=TLW;tlCv.height=TLH;
   drawTL();
@@ -1699,10 +1706,9 @@ function initTLInteraction(){
       document.getElementById('tl-tt-date').textContent=hit.date;
       document.getElementById('tl-tt-label').textContent=hit.label;
       document.getElementById('tl-tt-label').style.color=hit.color;
-      // Position tooltip above cursor
-      let tx=e.clientX-rect.left+10;
-      let ty=e.clientY-rect.top-60;
-      if(ty<5)ty=e.clientY-rect.top+15;
+      let tx=mx+12, ty=my-66;
+      if(ty<4)ty=my+16;
+      if(tx>TLW-190)tx=mx-190;
       tooltip.style.left=tx+'px';
       tooltip.style.top=ty+'px';
       tooltip.classList.add('show');
@@ -1714,70 +1720,107 @@ function initTLInteraction(){
   });
   tlCv.addEventListener('mouseleave',()=>tooltip.classList.remove('show'));
 }
-function dToX(ds){return((new Date(ds)-TL_START)/TL_RANGE)*(TLW-100)+50;}
+
+function addMonths(d,n){const x=new Date(d);x.setMonth(x.getMonth()+n);return x;}
+function fmtQ(d){return 'Q'+(Math.floor(d.getMonth()/3)+1)+" '"+String(d.getFullYear()).slice(2);}
+function dToX(ds){
+  const d=ds instanceof Date?ds:new Date(ds);
+  return((d-TLmin)/TLrange)*(TLW-TL_PAD*2)+TL_PAD;
+}
 
 function drawTL(){
   if(!tlCtx||!TLW||!TLH)return;
   tlCtx.clearRect(0,0,TLW,TLH);
   TL_HITS=[];
-  const lc=isDark?'#1e3040':'#8ca0b4', tc=isDark?'#3d6070':'#0a1628';
-  const activeLayers=Array.from(document.querySelectorAll('.tl-btn.on')).map(b=>b.dataset.layer);
+  const lc=isDark?'#1e3040':'#8ca0b4', tc=isDark?'#5b7d92':'#2d4a66';
+  const grid=isDark?'rgba(30,48,64,0.45)':'rgba(0,20,60,0.08)';
+  const now=new Date();
+  const mode=document.querySelector('.tl-btn.on')?.dataset.mode||'all';
 
-  // Base line
-  tlCtx.beginPath();tlCtx.moveTo(50,TLH/2);tlCtx.lineTo(TLW-50,TLH/2);
+  // Pull milestones straight from the live project data — never goes stale
+  let pts=[];
+  PROJECTS.forEach(p=>{
+    (p.milestones||[]).forEach(ms=>{
+      if(!ms.d)return;
+      pts.push({d:new Date(ms.d),ds:ms.d,proj:p.name,color:p.color,label:ms.l});
+    });
+  });
+  if(mode==='upcoming'){
+    const m0=new Date(now.getFullYear(),now.getMonth(),1);
+    pts=pts.filter(pt=>pt.d>=m0);
+  }
+  if(!pts.length){
+    tlCtx.font='11px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
+    tlCtx.fillText(mode==='upcoming'?'No upcoming milestones':'No milestones to show',TLW/2,TLH/2);
+    return;
+  }
+  pts.sort((a,b)=>(a.d-b.d)||a.proj.localeCompare(b.proj));
+
+  // Range derived from the data, always padded so NOW sits inside the view
+  const times=pts.map(p=>p.d.getTime()).concat(now.getTime());
+  TLmin=addMonths(new Date(Math.min(...times)),-1);
+  TLmax=addMonths(new Date(Math.max(...times)),1);
+  TLrange=(TLmax-TLmin)||1;
+
+  const baseY=TLH-26;
+
+  // Quarter gridlines + labels
+  let q=new Date(TLmin.getFullYear(),Math.floor(TLmin.getMonth()/3)*3,1);
+  while(q<=TLmax){
+    const x=dToX(q);
+    if(x>=TL_PAD-1&&x<=TLW-TL_PAD+1){
+      tlCtx.beginPath();tlCtx.moveTo(x,18);tlCtx.lineTo(x,baseY);
+      tlCtx.strokeStyle=grid;tlCtx.lineWidth=1;tlCtx.stroke();
+      tlCtx.font='9px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
+      tlCtx.fillText(fmtQ(q),x,TLH-8);
+    }
+    q=addMonths(q,3);
+  }
+
+  // Axis baseline
+  tlCtx.beginPath();tlCtx.moveTo(TL_PAD,baseY);tlCtx.lineTo(TLW-TL_PAD,baseY);
   tlCtx.strokeStyle=lc;tlCtx.lineWidth=1;tlCtx.stroke();
 
-  // Month ticks
-  let d=new Date(TL_START);
-  while(d<TL_END){
-    const x=dToX(d.toISOString().slice(0,7));
-    tlCtx.beginPath();tlCtx.moveTo(x,TLH/2-2);tlCtx.lineTo(x,TLH/2+2);
-    tlCtx.strokeStyle=lc;tlCtx.lineWidth=1;tlCtx.stroke();
-    if(d.getMonth()%3===0){
-      tlCtx.font='8px DM Mono,monospace';tlCtx.fillStyle=tc;tlCtx.textAlign='center';
-      tlCtx.fillText(`${d.toLocaleString('default',{month:'short'})} '${String(d.getFullYear()).slice(2)}`,x,TLH-5);
-    }
-    d.setMonth(d.getMonth()+1);
-  }
-
-  // NOW
-  const nowX=dToX(new Date().toISOString().slice(0,7));
-  tlCtx.beginPath();tlCtx.moveTo(nowX,2);tlCtx.lineTo(nowX,TLH-14);
-  tlCtx.strokeStyle='#ff6b35';tlCtx.lineWidth=1.5;tlCtx.stroke();
+  // NOW marker
+  const nowX=dToX(now);
+  tlCtx.beginPath();tlCtx.moveTo(nowX,14);tlCtx.lineTo(nowX,baseY);
+  tlCtx.setLineDash([3,3]);tlCtx.strokeStyle='#ff6b35';tlCtx.lineWidth=1.5;tlCtx.stroke();tlCtx.setLineDash([]);
   tlCtx.font='bold 9px DM Mono,monospace';tlCtx.fillStyle='#ff6b35';tlCtx.textAlign='center';
-  tlCtx.fillText('NOW',nowX,10);
+  tlCtx.fillText('NOW',nowX,11);
 
-  // Project milestones
-  if(activeLayers.includes('projects')){
-    PROJECTS.forEach((proj,pi)=>{
-      (proj.milestones||[]).forEach((ms,i)=>{
-        const x=dToX(ms.d);if(x<50||x>TLW-50)return;
-        const yOff=pi%2===0?-14:14;
-        tlCtx.beginPath();tlCtx.arc(x,TLH/2,5,0,Math.PI*2);
-        tlCtx.fillStyle=proj.color;tlCtx.fill();
-        tlCtx.beginPath();tlCtx.arc(x,TLH/2,5,0,Math.PI*2);
-        tlCtx.strokeStyle=proj.color+'66';tlCtx.lineWidth=2;tlCtx.stroke();
-        tlCtx.beginPath();tlCtx.moveTo(x,TLH/2+(yOff>0?5:-5));tlCtx.lineTo(x,TLH/2+yOff);
-        tlCtx.strokeStyle=proj.color+'55';tlCtx.lineWidth=1;tlCtx.stroke();
-        tlCtx.font='bold 8px DM Mono,monospace';tlCtx.fillStyle=proj.color;tlCtx.textAlign='center';
-        tlCtx.fillText(ms.l,x,TLH/2+yOff+(yOff>0?10:-3));
-        TL_HITS.push({x,y:TLH/2,proj:proj.name,label:ms.l,date:ms.d,color:proj.color});
-      });
-    });
-  }
+  // Spread milestones that share a month so labels don't pile on one x
+  const groups={};
+  pts.forEach(p=>{(groups[p.ds]=groups[p.ds]||[]).push(p);});
+  Object.values(groups).forEach(g=>{
+    const n=g.length;
+    g.forEach((p,i)=>{p._dx=(i-(n-1)/2)*18;});
+  });
 
-  // Cultural events
-  WORLD_EVENTS.forEach(evt=>{
-    const cl=CULT_LAYERS.find(l=>l.id===evt.type);
-    if(!cl||!cl.on)return;
-    if(evt.type==='social'&&!activeLayers.includes('social'))return;
-    if((evt.type==='tech'||evt.type==='geo')&&!activeLayers.includes('cultural'))return;
-    const x=dToX(evt.d);if(x<50||x>TLW-50)return;
-    tlCtx.save();tlCtx.translate(x,10);tlCtx.rotate(Math.PI/4);
-    tlCtx.fillStyle=evt.color;tlCtx.fillRect(-3,-3,6,6);
-    tlCtx.restore();
-    tlCtx.font='7px DM Mono,monospace';tlCtx.fillStyle=evt.color+'cc';tlCtx.textAlign='center';
-    tlCtx.fillText(evt.l.slice(0,22),x,22);
+  // Draw milestones with stacked-label collision avoidance
+  const levelEnds=[];                  // right edge x reached at each stack level
+  const rowH=15, gap=8, firstOffset=14;
+  pts.forEach(pt=>{
+    const x=dToX(pt.d)+pt._dx;
+    const past=pt.d<now;
+    tlCtx.font='9px DM Mono,monospace';
+    const half=tlCtx.measureText(pt.label).width/2+6;
+    let lvl=0;
+    while(lvl<levelEnds.length && (x-half) < levelEnds[lvl]+gap) lvl++;
+    levelEnds[lvl]=x+half;
+    const labelY=baseY-firstOffset-lvl*rowH;
+
+    tlCtx.globalAlpha=past?0.4:1;
+    // leader line dot -> label
+    tlCtx.beginPath();tlCtx.moveTo(x,baseY);tlCtx.lineTo(x,labelY+4);
+    tlCtx.strokeStyle=pt.color+(past?'33':'66');tlCtx.lineWidth=1;tlCtx.stroke();
+    // dot (upcoming get a halo)
+    if(!past){tlCtx.beginPath();tlCtx.arc(x,baseY,6,0,Math.PI*2);tlCtx.strokeStyle=pt.color+'55';tlCtx.lineWidth=2;tlCtx.stroke();}
+    tlCtx.beginPath();tlCtx.arc(x,baseY,4,0,Math.PI*2);tlCtx.fillStyle=pt.color;tlCtx.fill();
+    // label
+    tlCtx.fillStyle=pt.color;tlCtx.textAlign='center';tlCtx.fillText(pt.label,x,labelY);
+    tlCtx.globalAlpha=1;
+
+    TL_HITS.push({x,y:baseY,proj:pt.proj,label:pt.label,date:pt.ds,color:pt.color});
   });
 }
 
@@ -1835,9 +1878,13 @@ document.getElementById('btn-funding').onclick=function(){
 document.getElementById('btn-map').onclick=function(){clearHBtns();this.classList.add('on');};
 function clearHBtns(){document.querySelectorAll('.hbtn').forEach(b=>b.className='hbtn');}
 
-// Timeline layer toggles
+// Timeline view mode (ALL / UPCOMING) — single-select
 document.querySelectorAll('.tl-btn').forEach(btn=>{
-  btn.onclick=()=>{btn.classList.toggle('on');drawTL();};
+  btn.onclick=()=>{
+    document.querySelectorAll('.tl-btn').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    drawTL();
+  };
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2067,7 +2114,7 @@ function exportSnapshot(){
 </div>
 
 <div class="footer">
-  GENERATED BY NEXUS-M v8.3 · CAPTAIN MIG · nexus-m.vercel.app
+  GENERATED BY NEXUS-M v8.4 · CAPTAIN MIG · nexus-m.vercel.app
   · CONFIDENTIAL — NOT FOR DISTRIBUTION
 </div>
 </body>
